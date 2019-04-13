@@ -27,8 +27,5 @@ void main()
 	float pointSpecular = pow(max(dot(viewDir, -pointReflectDir), 0.0), specularPow);
 	float pointColor = pointDiffuse + pointSpecular * specularMaterial;
 
-
-
-
 	FragColor = vec4(lightColor * (0.33 + dirColor * 0.33 + pointColor * 0.33), 1);
 }

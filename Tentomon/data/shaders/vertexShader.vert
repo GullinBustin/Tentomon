@@ -8,8 +8,6 @@ uniform mat4 M;
 uniform mat4 V;
 uniform mat4 P;
 
-
-
 out vec3 Normal;
 out vec3 Position;
 
@@ -21,6 +19,4 @@ void main()
 	Position = vec3(M * vec4(aPos, 1));
 	Normal = vec3(M * vec4(aNor, 0));
 
-//	float dirLightFactor = max(dot(vec3(M * vec4(aNor, 0)),dirLight), 0);
-//	color = lightColor * ( 0.5 + dirLightFactor * 0.5) ;
 }

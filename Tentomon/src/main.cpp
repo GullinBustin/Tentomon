@@ -49,16 +49,7 @@ int main()
 
 	glfwSetCursorPos(window, SCR_WIDTH / 2, SCR_HEIGHT / 2);
 
-	unsigned int shaderProgram;
-	shaderProgram = LoadShaders("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
-
-	GLuint ModelID = glGetUniformLocation(shaderProgram, "M");
-	GLuint ViewID = glGetUniformLocation(shaderProgram, "V");
-	GLuint ProjectionID = glGetUniformLocation(shaderProgram, "P");
-	GLuint lightColorID = glGetUniformLocation(shaderProgram, "lightColor");
-	GLuint dirLightID = glGetUniformLocation(shaderProgram, "dirLight");
-	GLuint pointLightID = glGetUniformLocation(shaderProgram, "pointLight");
-	GLuint cameraPosID = glGetUniformLocation(shaderProgram, "cameraPos");
+	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -100,19 +91,23 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(shaderProgram);
-		glUniformMatrix4fv(ViewID, 1, GL_FALSE, &View[0][0]);
-		glUniformMatrix4fv(ProjectionID, 1, GL_FALSE, &Projection[0][0]);
-		glUniformMatrix4fv(ModelID, 1, GL_FALSE, &Model[0][0]);
 		glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec3 dirLight = glm::vec3(1.0f, 0.0f, 0.0f);
 		glm::vec3 pointLight = glm::vec3(0.0f, 2.0f, -2.0f);
-		glUniform3fv(lightColorID, 1, &lightColor[0]);
-		glUniform3fv(dirLightID, 1, &dirLight[0]);
-		glUniform3fv(pointLightID, 1, &pointLight[0]);
-		glUniform3fv(cameraPosID, 1, &cameraPos[0]);
-		
+
+		my_shader.useShader();
+
+		my_shader.setUniform("M", Model);
+		my_shader.setUniform("V", View);
+		my_shader.setUniform("P", Projection);
+		my_shader.setUniform("lightColor", lightColor);
+		my_shader.setUniform("dirLight", dirLight);
+		my_shader.setUniform("pointLight", pointLight);
+		my_shader.setUniform("cameraPos", cameraPos);
+
 		my_cube.draw();
+
+		my_shader.stopShader();
 
 		glDisableVertexAttribArray(0);
 

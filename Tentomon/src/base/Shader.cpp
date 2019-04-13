@@ -34,7 +34,6 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
-
 	// Compile Vertex Shader
 	printf("Compiling shader : %s\n", vertex_file_path);
 	char const * VertexSourcePointer = VertexShaderCode.c_str();
@@ -50,8 +49,6 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 		printf("%s\n", &VertexShaderErrorMessage[0]);
 	}
 
-
-
 	// Compile Fragment Shader
 	printf("Compiling shader : %s\n", fragment_file_path);
 	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
@@ -66,8 +63,6 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
 		printf("%s\n", &FragmentShaderErrorMessage[0]);
 	}
-
-
 
 	// Link the program
 	printf("Linking program\n");
@@ -85,7 +80,6 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 		printf("%s\n", &ProgramErrorMessage[0]);
 	}
 
-
 	glDetachShader(ProgramID, VertexShaderID);
 	glDetachShader(ProgramID, FragmentShaderID);
 
@@ -96,11 +90,44 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 }
 
 
-Shader::Shader()
+Shader::Shader(const char * vertex_file_path, const char * fragment_file_path)
 {
+	Shader::programID = LoadShaders(vertex_file_path, fragment_file_path);
 }
 
 
 Shader::~Shader()
 {
+}
+
+void Shader::setUniform(const GLchar *name, glm::vec3 value)
+{
+	if (Shader::uniformIds.find(name) == Shader::uniformIds.end()) {
+		Shader::uniformIds[name] = glGetUniformLocation(Shader::programID, name);
+	}
+
+	GLuint temp_prog_id = Shader::uniformIds[name];
+
+	glUniform3fv(temp_prog_id, 1, &value[0]);
+}
+
+void Shader::setUniform(const GLchar *name, glm::mat4 value, GLboolean transpose)
+{
+	if (Shader::uniformIds.find(name) == Shader::uniformIds.end()) {
+		Shader::uniformIds[name] = glGetUniformLocation(Shader::programID, name);
+	}
+
+	GLuint temp_prog_id = Shader::uniformIds[name];
+
+	glUniformMatrix4fv(temp_prog_id, 1, transpose, &value[0][0]);
+}
+
+void Shader::useShader()
+{
+	glUseProgram(Shader::programID);
+}
+
+void Shader::stopShader()
+{
+	glUseProgram(0);
 }

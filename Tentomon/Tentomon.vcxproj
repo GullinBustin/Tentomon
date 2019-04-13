@@ -31,6 +31,10 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Cube.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data\shaders\fragmentShader.frag" />
+    <None Include="data\shaders\vertexShader.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{9887128A-E3F6-44F8-9D99-8A031E3FDFA4}</ProjectGuid>
