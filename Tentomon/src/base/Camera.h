@@ -5,12 +5,12 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <iostream>
 
-class Camera1
+class Camera
 {
 public:
-	Camera1(float x, float y, float z, float vx, float vy, float vz, float upx, float upy, float upz);
-	Camera1(glm::vec3 pos, glm::vec3 dir, glm::vec3 up);
-	~Camera1();
+	Camera(float x, float y, float z, float vx, float vy, float vz, float upx, float upy, float upz);
+	Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up);
+	~Camera();
 
 	void fixPointTransate(float x, float y, float z, float px, float py, float pz);
 	void pureTranslate(float x, float y, float z);
@@ -21,6 +21,9 @@ public:
 	void changeUp(float upx, float upy, float upz);
 
 	void rotateAxis(glm::vec3 axis, float angle);
+
+	void oldTranslate(float x, float y, float linealSpeed=1.0f);
+	void oldRotate(float x, float y, float angularSpeed = 0.1f);
 
 	glm::mat4 getCameraMatrix();
 

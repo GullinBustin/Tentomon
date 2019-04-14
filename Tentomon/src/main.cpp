@@ -15,15 +15,14 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-#include "camera.h"
 #include "Cube.h"
 
 #include "base/Config.h"
 #include "base/Shader.h"
-#include "base/Camera1.h"
+#include "base/Camera.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window, camera *my_camera, double deltaTime);
+void processInput(GLFWwindow *window, Camera *my_camera, double deltaTime);
 unsigned int stb_load_OGL_texture(char const *filename, unsigned int textureNumber = GL_TEXTURE0);
 
 // settings
@@ -69,8 +68,7 @@ int main()
 
 	double lastTime = glfwGetTime();
 	int nbFrames = 0;
-	camera cameraTest = camera(0, 0, 3, 0, 0, -1, 0, 1, 0, 1.0f, 0.1f);
-	Camera1 cameraTest2 = Camera1(0, 0, 3, 0, 0, -1, 0, 1, 0);
+	Camera cameraTest = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0);
 
 	double oldCurrentTime = glfwGetTime();
 
@@ -78,17 +76,8 @@ int main()
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
-		glm::vec3 cameraPos = cameraTest.getPos();
-		glm::vec3 cameraDir = cameraTest.getDir();
-		glm::vec3 cameraUp = cameraTest.getUp();
 
-		View = glm::lookAt(
-			cameraPos, // Camera is at (4,3,3), in World Space
-			cameraPos + cameraDir, // and looks at the origin
-			cameraUp  // Head is up (set to 0,-1,0 to look upside-down)
-		);
-
-		View = cameraTest2.getCameraMatrix();
+		View = cameraTest.getCameraMatrix();
 
 		glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
@@ -107,7 +96,7 @@ int main()
 		my_shader.setUniform("lightColor", lightColor);
 		my_shader.setUniform("dirLight", dirLight);
 		my_shader.setUniform("pointLight", pointLight);
-		my_shader.setUniform("cameraPos", cameraPos);
+		my_shader.setUniform("cameraPos", cameraTest.position);
 
 		my_cube.draw();
 
@@ -135,6 +124,7 @@ int main()
 		// input
 		// -----
 		processInput(window, &cameraTest, deltaTime);
+
 	}
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
@@ -145,7 +135,7 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window, camera *my_camera, double deltaTime)
+void processInput(GLFWwindow *window, Camera *my_camera, double deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
@@ -157,23 +147,23 @@ void processInput(GLFWwindow *window, camera *my_camera, double deltaTime)
 	
 	xpos -= SCR_WIDTH / 2;
 	ypos -= SCR_HEIGHT / 2;
-	my_camera->rotateCamera(-xpos, -ypos);
+	my_camera->oldRotate(-xpos, -ypos);
 
 	// Move forward
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		my_camera->translateCamera(0, deltaTime);
+		my_camera->oldTranslate(0, deltaTime);
 	}
 	// Move backward
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		my_camera->translateCamera(0, -deltaTime);
+		my_camera->oldTranslate(0, -deltaTime);
 	}
 	// Strafe right
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		my_camera->translateCamera(deltaTime, 0);
+		my_camera->oldTranslate(deltaTime, 0);
 	}
 	// Strafe left
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		my_camera->translateCamera(-deltaTime, 0);
+		my_camera->oldTranslate(-deltaTime, 0);
 	}
 }
 
