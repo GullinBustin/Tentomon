@@ -20,6 +20,7 @@
 
 #include "base/Config.h"
 #include "base/Shader.h"
+#include "base/Camera1.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, camera *my_camera, double deltaTime);
@@ -69,6 +70,7 @@ int main()
 	double lastTime = glfwGetTime();
 	int nbFrames = 0;
 	camera cameraTest = camera(0, 0, 3, 0, 0, -1, 0, 1, 0, 1.0f, 0.1f);
+	Camera1 cameraTest2 = Camera1(0, 0, 3, 0, 0, -1, 0, 1, 0);
 
 	double oldCurrentTime = glfwGetTime();
 
@@ -85,6 +87,8 @@ int main()
 			cameraPos + cameraDir, // and looks at the origin
 			cameraUp  // Head is up (set to 0,-1,0 to look upside-down)
 		);
+
+		View = cameraTest2.getCameraMatrix();
 
 		glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
