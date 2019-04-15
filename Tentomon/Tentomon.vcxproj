@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\base\Camera.cpp" />
     <ClCompile Include="src\base\config.cpp" />
+    <ClCompile Include="src\base\Mesh.cpp" />
     <ClCompile Include="src\base\Shader.cpp" />
     <ClCompile Include="src\Cube.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -28,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="src\base\Camera.h" />
     <ClInclude Include="src\base\config.h" />
+    <ClInclude Include="src\base\Mesh.h" />
     <ClInclude Include="src\base\Shader.h" />
     <ClInclude Include="src\Cube.h" />
   </ItemGroup>
