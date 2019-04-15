@@ -1,7 +1,7 @@
 #include "Cube.h"
 
 
-static const float vertex_array_normal[] = {
+static const float vertex_array[] = {
 	-1.0f,-1.0f,-1.0f, // triángulo 1 : comienza
 	-1.0f,-1.0f, 1.0f,
 	-1.0f, 1.0f, 1.0f, // triángulo 1 : termina
@@ -79,59 +79,21 @@ static const float normal_array[] = {
 	0.0f, 0.0f, 1.0f
 };
 
-static const float vertex_array[] = {
-	-1.0f, -1.0f, 1.0f,
-	 1.0f, -1.0f, 1.0f,
-	 1.0f,  1.0f, 1.0f,
-	-1.0f,  1.0f, 1.0f,
-	-1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f
-};
-static const unsigned int element_array[] = {
-	0, 1, 2,
-	0, 2, 3,
-	4, 7, 6,
-	4, 6, 5,
-	0, 3, 7,
-	0, 7, 4,
-	1, 6, 2,
-	1, 5, 6,
-	0, 4, 5,
-	0, 5, 1,
-	3, 6, 7,
-	3, 2, 6
-};
 
-
-Cube::Cube(bool normals)
+Cube::Cube()
 {
-	withNormals = normals;
-	unsigned int VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	if (!normals)
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_array), vertex_array, GL_STATIC_DRAW);
-	else
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_array_normal), vertex_array_normal, GL_STATIC_DRAW);
 
-	if (!normals) {
-		glGenBuffers(1, &elementbuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(element_array), element_array, GL_STATIC_DRAW);
-	}
-	else {
-		glGenBuffers(1, &normalbuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(normal_array), normal_array, GL_STATIC_DRAW);
-	}
-}
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_array), vertex_array, GL_STATIC_DRAW);
 
-void Cube::draw() {
+	glGenBuffers(1, &normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(normal_array), normal_array, GL_STATIC_DRAW);
+
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glVertexAttribPointer(
@@ -153,14 +115,16 @@ void Cube::draw() {
 		(void*)0                          // corrimiento de buffer
 	);
 
-	if (!withNormals) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-		glDrawElements(GL_TRIANGLES, 3 * 2 * 6, GL_UNSIGNED_INT, 0);
-	}
-	else {
-		glDrawArrays(GL_TRIANGLES, 0, 3*2*6);
-	}
+	glBindVertexArray(0);
 
+}
+
+void Cube::draw() {
+
+	glBindVertexArray(VAO);
+	glEnableVertexAttribArray(0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3 * 2 * 6);
 
 	glDisableVertexAttribArray(0);
 }

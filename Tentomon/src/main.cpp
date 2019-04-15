@@ -64,7 +64,7 @@ int main()
 	glm::mat4 View;
 	glm::mat4 Model = glm::mat4(1.f);
 
-	Cube my_cube = Cube(true);
+	Cube my_cube = Cube();
 
 	double lastTime = glfwGetTime();
 	int nbFrames = 0;

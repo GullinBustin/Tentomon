@@ -2,6 +2,10 @@
 
 
 
+Mesh::Mesh()
+{
+}
+
 Mesh::Mesh(std::vector<float> vertices, std::vector<unsigned int> indices)
 {
 	this->vertices = vertices;

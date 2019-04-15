@@ -3,18 +3,17 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-class Cube
+#include "base/Mesh.h"
+
+class Cube: public Mesh
 {
 public:
-	Cube(bool normals);
+	Cube();
 	~Cube();
 	void draw();
 
 private:
 	GLuint vertexbuffer;
-	GLuint elementbuffer;
 	GLuint normalbuffer;
-	bool withNormals;
-
 };
 
