@@ -25,6 +25,7 @@
     <ClCompile Include="src\base\Shader.cpp" />
     <ClCompile Include="src\Cube.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\Camera.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="src\base\Mesh.h" />
     <ClInclude Include="src\base\Shader.h" />
     <ClInclude Include="src\Cube.h" />
+    <ClInclude Include="src\Plane.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\fragmentShader.frag" />

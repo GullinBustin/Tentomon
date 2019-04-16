@@ -17,15 +17,14 @@ void main()
 	vec3 pointLightDir = normalize(Position - pointLight);
 	vec3 viewDir = normalize(Position - cameraPos);
 
-	float dirLightDiffuse = max(dot(Normal,dirLight), 0);
+	float dirLightDiffuse = max(dot(Normal,-dirLight), 0);
 	vec3 dirReflectDir = reflect(dirLight, Normal);
-	float dirLightSpecular = pow(max(dot(viewDir, dirReflectDir), 0.0), specularPow);
+	float dirLightSpecular = pow(max(dot(-viewDir, dirReflectDir), 0.0), specularPow);
 	float dirColor = dirLightDiffuse + dirLightSpecular * specularMaterial;
 
 	float pointDiffuse = max(dot(Normal,-pointLightDir), 0);
 	vec3 pointReflectDir = reflect(pointLightDir, Normal);
 	float pointSpecular = pow(max(dot(viewDir, -pointReflectDir), 0.0), specularPow);
 	float pointColor = pointDiffuse + pointSpecular * specularMaterial;
-
 	FragColor = vec4(lightColor * (0.33 + dirColor * 0.33 + pointColor * 0.33), 1);
 }

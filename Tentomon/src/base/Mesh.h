@@ -15,7 +15,7 @@ public:
 	void draw(Shader shader);
 	unsigned int VAO;
 
-private:
+protected:
 
 	std::vector<float> vertices;
 	std::vector<unsigned int> indices;

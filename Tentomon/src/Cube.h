@@ -11,9 +11,5 @@ public:
 	Cube();
 	~Cube();
 	void draw();
-
-private:
-	GLuint vertexbuffer;
-	GLuint normalbuffer;
 };
 

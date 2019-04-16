@@ -16,6 +16,7 @@
 #include <stb_image.h>
 
 #include "Cube.h"
+#include "Plane.h"
 
 #include "base/Config.h"
 #include "base/Shader.h"
@@ -38,10 +39,6 @@ int main()
 		return -1;
 	}
 
-	// Enable depth test
-	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS);
 
 	glfwSwapInterval(1);
 
@@ -64,6 +61,7 @@ int main()
 	glm::mat4 View;
 	glm::mat4 Model = glm::mat4(1.f);
 
+	//Plane my_cube = Plane();
 	Cube my_cube = Cube();
 
 	double lastTime = glfwGetTime();
