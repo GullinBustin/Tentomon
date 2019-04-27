@@ -100,6 +100,39 @@ Shader::~Shader()
 {
 }
 
+void Shader::setUniform(const GLchar* name, int value)
+{
+	if (Shader::uniformIds.find(name) == Shader::uniformIds.end()) {
+		Shader::uniformIds[name] = glGetUniformLocation(Shader::programID, name);
+	}
+
+	GLuint temp_prog_id = Shader::uniformIds[name];
+
+	glUniform1i(temp_prog_id, value);
+}
+
+void Shader::setUniform(const GLchar* name, float value)
+{
+	if (Shader::uniformIds.find(name) == Shader::uniformIds.end()) {
+		Shader::uniformIds[name] = glGetUniformLocation(Shader::programID, name);
+	}
+
+	GLuint temp_prog_id = Shader::uniformIds[name];
+
+	glUniform1f(temp_prog_id, value);
+}
+
+void Shader::setUniform(const GLchar* name, glm::vec2 value)
+{
+	if (Shader::uniformIds.find(name) == Shader::uniformIds.end()) {
+		Shader::uniformIds[name] = glGetUniformLocation(Shader::programID, name);
+	}
+
+	GLuint temp_prog_id = Shader::uniformIds[name];
+
+	glUniform2fv(temp_prog_id, 1, &value[0]);
+}
+
 void Shader::setUniform(const GLchar *name, glm::vec3 value)
 {
 	if (Shader::uniformIds.find(name) == Shader::uniformIds.end()) {

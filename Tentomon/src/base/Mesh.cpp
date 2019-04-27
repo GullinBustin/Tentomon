@@ -1,7 +1,5 @@
 #include "Mesh.h"
 
-
-
 Mesh::Mesh()
 {
 }
@@ -41,7 +39,7 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::draw(Shader shader)
+void Mesh::draw()
 {
 	// draw mesh
 	glBindVertexArray(VAO);

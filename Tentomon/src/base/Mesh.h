@@ -12,7 +12,7 @@ public:
 	Mesh();
 	Mesh(std::vector<float> vertices, std::vector<unsigned int> indices);
 	~Mesh();
-	void draw(Shader shader);
+	virtual void draw();
 	unsigned int VAO;
 
 protected:

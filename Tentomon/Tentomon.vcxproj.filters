@@ -36,6 +36,9 @@
     <ClCompile Include="src\Plane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\base\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\config.h">
@@ -56,9 +59,19 @@
     <ClInclude Include="src\Plane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\base\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\fragmentShader.frag" />
     <None Include="data\shaders\vertexShader.vert" />
+    <None Include="data\shaders\Passthrough.vert" />
+    <None Include="data\shaders\SimpleTexture.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\images\tochos.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

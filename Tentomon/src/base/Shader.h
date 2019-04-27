@@ -24,6 +24,9 @@ public:
 	Shader(const char * vertex_file_path, const char * fragment_file_path);
 	~Shader();
 	map<const GLchar*, GLuint> uniformIds;
+	void setUniform(const GLchar* name, int);
+	void setUniform(const GLchar* name, float);
+	void setUniform(const GLchar* name, glm::vec2);
 	void setUniform(const GLchar *name, glm::vec3);
 	void setUniform(const GLchar *name, glm::mat4, GLboolean transpose = 0);
 	void useShader();

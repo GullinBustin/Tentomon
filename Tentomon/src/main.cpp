@@ -12,19 +12,16 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
 #include "Cube.h"
 #include "Plane.h"
 
 #include "base/Config.h"
 #include "base/Shader.h"
 #include "base/Camera.h"
+#include "base/Texture.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Camera *my_camera, double deltaTime);
-unsigned int stb_load_OGL_texture(char const *filename, unsigned int textureNumber = GL_TEXTURE0);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -39,17 +36,13 @@ int main()
 		return -1;
 	}
 
-
 	glfwSwapInterval(1);
 
-	stbi_set_flip_vertically_on_load(true);
 
 	glfwSetCursorPos(window, SCR_WIDTH / 2, SCR_HEIGHT / 2);
 
 	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	Shader plane_shader = Shader("data/shaders/Passthrough.vert", "data/shaders/SimpleTexture.frag");
 
 	glm::mat4 Projection = glm::perspective(
 		glm::radians(45.0f), // El campo de visión vertical, en radián: la cantidad de "zoom". Piensa en el lente de la cámara. Usualmente está entre 90° (extra ancho) y 30° (zoom aumentado)
@@ -61,14 +54,45 @@ int main()
 	glm::mat4 View;
 	glm::mat4 Model = glm::mat4(1.f);
 
-	//Plane my_cube = Plane();
-	Cube my_cube = Cube();
+	Mesh* my_plane = new Plane();
+	Mesh* my_cube = new Cube();
 
 	double lastTime = glfwGetTime();
 	int nbFrames = 0;
 	Camera cameraTest = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0);
 
 	double oldCurrentTime = glfwGetTime();
+
+	
+	///RENDER TEXTURE///
+	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+	GLuint FramebufferName = 0;
+	glGenFramebuffers(1, &FramebufferName);
+	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+
+	// The texture we're going to render to
+	Texture my_texture = Texture();
+	my_texture.emptyTexture(SCR_WIDTH, SCR_HEIGHT);
+
+	Texture my_texture2 = Texture();
+	my_texture2.getFromFile("data/images/tochos.jpg");
+
+	// The depth buffer
+	GLuint depthrenderbuffer;
+	glGenRenderbuffers(1, &depthrenderbuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+
+	// Set "renderedTexture" as our colour attachement #0
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, my_texture.textureID, 0);
+
+	// Set the list of draw buffers.
+	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		return false;
 
 	// render loop
 	// -----------
@@ -79,12 +103,16 @@ int main()
 
 		glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec3 dirLight = glm::vec3(1.0f, 0.0f, 0.0f);
 		glm::vec3 pointLight = glm::vec3(0.0f, 2.0f, -2.0f);
+
+		// Render to our framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		my_shader.useShader();
 
@@ -96,11 +124,29 @@ int main()
 		my_shader.setUniform("pointLight", pointLight);
 		my_shader.setUniform("cameraPos", cameraTest.position);
 
-		my_cube.draw();
+		my_cube->draw();
 
 		my_shader.stopShader();
 
 		glDisableVertexAttribArray(0);
+
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+
+		plane_shader.useShader();
+
+		// Bind our texture in Texture Unit 0
+		my_texture.useTexture();
+		// Set our "renderedTexture" sampler to use Texture Unit 0
+		plane_shader.setUniform("renderedTexture", 0);
+		plane_shader.setUniform("time", (float)(glfwGetTime()* 10.0f));
+
+		my_plane->draw();
+		my_texture.stopTexture();
+		
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
@@ -174,32 +220,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-unsigned int stb_load_OGL_texture(char const *filename, unsigned int textureNumber) {
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glActiveTexture(textureNumber);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	// set the texture wrapping/filtering options (on the currently bound texture object)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// load and generate the texture
-	int width, height, nrChannels;
-	unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);
-
-	return texture;
-}
 // Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar
 // Depurar programa: F5 o menú Depurar > Iniciar depuración
 

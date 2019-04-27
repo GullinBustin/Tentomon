@@ -1,5 +1,6 @@
 #version 330 core
-out vec4 FragColor;
+
+layout(location = 0) out vec4 color;
 
 in vec3 Normal;
 in vec3 Position;
@@ -26,5 +27,5 @@ void main()
 	vec3 pointReflectDir = reflect(pointLightDir, Normal);
 	float pointSpecular = pow(max(dot(viewDir, -pointReflectDir), 0.0), specularPow);
 	float pointColor = pointDiffuse + pointSpecular * specularMaterial;
-	FragColor = vec4(lightColor * (0.33 + dirColor * 0.33 + pointColor * 0.33), 1);
+	color = vec4(lightColor * (0.33 + dirColor * 0.33 + pointColor * 0.33), 1);
 }
