@@ -1,7 +1,5 @@
 #include "Camera.h"
 
-
-
 Camera::Camera(float x, float y, float z, float vx, float vy, float vz, float upx, float upy, float upz)
 {
 	direction = glm::vec3(vx, vy, vz);
@@ -18,6 +16,16 @@ Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up)
 
 Camera::~Camera()
 {
+}
+
+void Camera::setProjection() //TODO
+{
+	projection = glm::perspective(
+		glm::radians(45.0f), // El campo de visión vertical, en radián: la cantidad de "zoom". Piensa en el lente de la cámara. Usualmente está entre 90° (extra ancho) y 30° (zoom aumentado)
+		4.0f / 3.0f,       // Proporción. Depende del tamaño de tu ventana 4/3 == 800/600 == 1280/960, Parece familiar?
+		0.01f,              // Plano de corte cercano. Tan grande como sea posible o tendrás problemas de precisión.
+		100.0f             // Plano de corte lejano. Tan pequeño como se pueda.
+	);
 }
 
 void Camera::fixPointTransate(float x, float y, float z, float px, float py, float pz)
@@ -78,6 +86,15 @@ void Camera::oldRotate(float x, float y, float angularSpeed) {
 		direction = glm::normalize(tempVecY);
 	}
 
+}
+
+void Camera::setUniforms(Shader shader) //TODO
+{
+	shader.useShader();
+	shader.setUniform("V", getCameraMatrix());
+	shader.setUniform("P", projection);
+	shader.setUniform("cameraPos", position);
+	shader.stopShader();
 }
 
 void Camera::oldTranslate(float x, float y, float linealSpeed) {

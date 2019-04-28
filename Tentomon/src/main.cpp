@@ -19,6 +19,8 @@
 #include "base/Shader.h"
 #include "base/Camera.h"
 #include "base/Texture.h"
+#include "base/Instance.h"
+#include "base/Scene.h"
 
 #include "DebugScene.h"
 
@@ -49,22 +51,13 @@ int main()
 
 	DebugScene my_deb = DebugScene(plane_shader, depth_shader);
 
-	glm::mat4 Projection = glm::perspective(
-		glm::radians(45.0f), // El campo de visión vertical, en radián: la cantidad de "zoom". Piensa en el lente de la cámara. Usualmente está entre 90° (extra ancho) y 30° (zoom aumentado)
-		4.0f / 3.0f,       // Proporción. Depende del tamaño de tu ventana 4/3 == 800/600 == 1280/960, Parece familiar?
-		0.01f,              // Plano de corte cercano. Tan grande como sea posible o tendrás problemas de precisión.
-		100.0f             // Plano de corte lejano. Tan pequeño como se pueda.
-	);
-
-	glm::mat4 View;
-	glm::mat4 Model = glm::mat4(1.f);
-
 	Mesh* my_plane = new Plane();
 	Mesh* my_cube = new Cube();
 
 	double lastTime = glfwGetTime();
 	int nbFrames = 0;
 	Camera cameraTest = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0);
+	cameraTest.setProjection();
 
 	double oldCurrentTime = glfwGetTime();
 
@@ -108,43 +101,23 @@ int main()
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		return false;
 
+	Instance cubeInstance = Instance(my_cube, my_shader);
+	Instance instanceList[1] = { cubeInstance };
+
+	Scene my_scene = Scene();
+	my_scene.setInstances(&instanceList[0], 1);
+	my_scene.setCamera(&cameraTest);
+
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
 
-		View = cameraTest.getCameraMatrix();
-
-		glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
-
-		glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-		glm::vec3 dirLight = glm::vec3(1.0f, 0.0f, 0.0f);
-		glm::vec3 pointLight = glm::vec3(0.0f, 2.0f, -2.0f);
-
 		// Render to our framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		my_shader.useShader();
-
-		my_shader.setUniform("M", Model);
-		my_shader.setUniform("V", View);
-		my_shader.setUniform("P", Projection);
-		my_shader.setUniform("lightColor", lightColor);
-		my_shader.setUniform("dirLight", dirLight);
-		my_shader.setUniform("pointLight", pointLight);
-		my_shader.setUniform("cameraPos", cameraTest.position);
-
-		my_cube->draw();
-
-		my_shader.stopShader();
-
-		glDisableVertexAttribArray(0);
-
+		my_scene.draw();
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
