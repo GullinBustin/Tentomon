@@ -35,9 +35,11 @@
     <ClInclude Include="src\base\Shader.h" />
     <ClInclude Include="src\base\Texture.h" />
     <ClInclude Include="src\Cube.h" />
+    <ClInclude Include="src\DebugScene.h" />
     <ClInclude Include="src\Plane.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\shaders\SimpleDepth.frag" />
     <None Include="data\shaders\fragmentShader.frag" />
     <None Include="data\shaders\Passthrough.vert" />
     <None Include="data\shaders\SimpleTexture.frag" />

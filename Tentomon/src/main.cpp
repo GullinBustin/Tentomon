@@ -20,6 +20,8 @@
 #include "base/Camera.h"
 #include "base/Texture.h"
 
+#include "DebugScene.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Camera *my_camera, double deltaTime);
 
@@ -43,6 +45,9 @@ int main()
 
 	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
 	Shader plane_shader = Shader("data/shaders/Passthrough.vert", "data/shaders/SimpleTexture.frag");
+	Shader depth_shader = Shader("data/shaders/Passthrough.vert", "data/shaders/SimpleDepth.frag");
+
+	DebugScene my_deb = DebugScene(plane_shader, depth_shader);
 
 	glm::mat4 Projection = glm::perspective(
 		glm::radians(45.0f), // El campo de visión vertical, en radián: la cantidad de "zoom". Piensa en el lente de la cámara. Usualmente está entre 90° (extra ancho) y 30° (zoom aumentado)
@@ -74,6 +79,9 @@ int main()
 	Texture my_texture = Texture();
 	my_texture.emptyTexture(SCR_WIDTH, SCR_HEIGHT);
 
+	Texture normal_texture = Texture();
+	normal_texture.emptyTexture(SCR_WIDTH, SCR_HEIGHT);
+
 	Texture my_texture2 = Texture();
 	my_texture2.getFromFile("data/images/tochos.jpg");
 
@@ -84,12 +92,18 @@ int main()
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
 
+	Texture depth_texture = Texture();
+	glBindTexture(GL_TEXTURE_2D, depth_texture.textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, SCR_WIDTH, SCR_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
 	// Set "renderedTexture" as our colour attachement #0
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, my_texture.textureID, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, normal_texture.textureID, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depth_texture.textureID, 0);
 
 	// Set the list of draw buffers.
-	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, DrawBuffers); // "1" is the size of DrawBuffers
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		return false;
@@ -109,6 +123,7 @@ int main()
 
 		// Render to our framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -133,20 +148,8 @@ int main()
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		my_deb.draw(my_texture, normal_texture, depth_texture, SCR_WIDTH, SCR_HEIGHT, my_plane);
 
-		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-
-		plane_shader.useShader();
-
-		// Bind our texture in Texture Unit 0
-		my_texture.useTexture();
-		// Set our "renderedTexture" sampler to use Texture Unit 0
-		plane_shader.setUniform("renderedTexture", 0);
-		plane_shader.setUniform("time", (float)(glfwGetTime()* 10.0f));
-
-		my_plane->draw();
-		my_texture.stopTexture();
-		
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------

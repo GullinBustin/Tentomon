@@ -1,6 +1,7 @@
 #version 330 core
 
 layout(location = 0) out vec4 color;
+layout(location = 1) out vec4 normal;
 
 in vec3 Normal;
 in vec3 Position;
@@ -28,4 +29,5 @@ void main()
 	float pointSpecular = pow(max(dot(viewDir, -pointReflectDir), 0.0), specularPow);
 	float pointColor = pointDiffuse + pointSpecular * specularMaterial;
 	color = vec4(lightColor * (0.33 + dirColor * 0.33 + pointColor * 0.33), 1);
+	normal = vec4(abs(Normal.x), abs(Normal.y), abs(Normal.z), 1);
 }

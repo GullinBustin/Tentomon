@@ -62,12 +62,16 @@
     <ClInclude Include="src\base\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DebugScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\fragmentShader.frag" />
     <None Include="data\shaders\vertexShader.vert" />
     <None Include="data\shaders\Passthrough.vert" />
     <None Include="data\shaders\SimpleTexture.frag" />
+    <None Include="data\shaders\SimpleDepth.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\images\tochos.jpg">
