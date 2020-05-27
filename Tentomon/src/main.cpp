@@ -33,6 +33,8 @@ const unsigned int SCR_HEIGHT = 600;
 
 int main()
 {
+	int mode_debug = 0;
+
 	GLFWwindow* window = Config::configureOpenGL(SCR_WIDTH, SCR_HEIGHT);
 
 	if (window == NULL)
@@ -112,17 +114,18 @@ int main()
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
-
 		// Render to our framebuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		if (mode_debug != 0) glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+		else glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 		my_scene.draw();
 		
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		my_deb.draw(my_texture, normal_texture, depth_texture, SCR_WIDTH, SCR_HEIGHT, my_plane);
-
+		if (mode_debug != 0) {
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			my_deb.draw(my_texture, normal_texture, depth_texture, SCR_WIDTH, SCR_HEIGHT, my_plane);
+		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
@@ -184,6 +187,33 @@ void processInput(GLFWwindow *window, Camera *my_camera, double deltaTime)
 	// Strafe left
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		my_camera->oldTranslate(-deltaTime, 0);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+		my_camera->changeDirection(1, 0, 0);
+		my_camera->changeUp(0, 1, 0);
+	}
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+		my_camera->changeDirection(-1, 0, 0);
+		my_camera->changeUp(0, 1, 0);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+		my_camera->changeDirection(0, 1, 0);
+		my_camera->changeUp(0, 0, 1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
+		my_camera->changeDirection(0, -1, 0);
+		my_camera->changeUp(0, 0, 1);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+		my_camera->changeDirection(0, 0, 1);
+		my_camera->changeUp(0, 1, 0);
+	}
+	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+		my_camera->changeDirection(0, 0, -1);
+		my_camera->changeUp(0, 1, 0);
 	}
 }
 
