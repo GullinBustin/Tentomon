@@ -24,6 +24,8 @@
 
 #include "DebugScene.h"
 
+#include "demo/MyScene.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Camera *my_camera, double deltaTime);
 
@@ -42,89 +44,41 @@ int main()
 		return -1;
 	}
 
-	glfwSwapInterval(1);
-
-
-	glfwSetCursorPos(window, SCR_WIDTH / 2, SCR_HEIGHT / 2);
-
-	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
-	Shader plane_shader = Shader("data/shaders/Passthrough.vert", "data/shaders/SimpleTexture.frag");
-	Shader depth_shader = Shader("data/shaders/Passthrough.vert", "data/shaders/SimpleDepth.frag");
-
-	DebugScene my_deb = DebugScene(plane_shader, depth_shader);
-
-	Mesh* my_plane = new Plane();
-	Mesh* my_cube = new Cube();
+	GLuint FramebufferName = 0;
+	DebugScene my_deb;
+	if (mode_debug != 0) {
+		Shader plane_shader = Shader("data/shaders/Passthrough.vert", "data/shaders/SimpleTexture.frag");
+		Shader depth_shader = Shader("data/shaders/Passthrough.vert", "data/shaders/SimpleDepth.frag");
+		my_deb = DebugScene(plane_shader, depth_shader);
+		my_deb.setup(SCR_WIDTH, SCR_HEIGHT);
+		FramebufferName = my_deb.FramebufferName;
+	}
 
 	double lastTime = glfwGetTime();
 	int nbFrames = 0;
-	Camera cameraTest = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0);
-	cameraTest.setProjection();
 
 	double oldCurrentTime = glfwGetTime();
-
-	
-	///RENDER TEXTURE///
-	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
-	GLuint FramebufferName = 0;
-	glGenFramebuffers(1, &FramebufferName);
-	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-
-	// The texture we're going to render to
-	Texture my_texture = Texture();
-	my_texture.emptyTexture(SCR_WIDTH, SCR_HEIGHT);
-
-	Texture normal_texture = Texture();
-	normal_texture.emptyTexture(SCR_WIDTH, SCR_HEIGHT);
-
-	Texture my_texture2 = Texture();
-	my_texture2.getFromFile("data/images/tochos.jpg");
-
-	// The depth buffer
-	GLuint depthrenderbuffer;
-	glGenRenderbuffers(1, &depthrenderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-
-	Texture depth_texture = Texture();
-	glBindTexture(GL_TEXTURE_2D, depth_texture.textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, SCR_WIDTH, SCR_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-
-	// Set "renderedTexture" as our colour attachement #0
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, my_texture.textureID, 0);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, normal_texture.textureID, 0);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depth_texture.textureID, 0);
-
-	// Set the list of draw buffers.
-	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, DrawBuffers); // "1" is the size of DrawBuffers
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		return false;
 
-	Instance cubeInstance = Instance(my_cube, my_shader);
-	Instance instanceList[1] = { cubeInstance };
-
-	Scene my_scene = Scene();
-	my_scene.setInstances(&instanceList[0], 1);
-	my_scene.setCamera(&cameraTest);
+	Scene* my_scene = new MyScene();
+	my_scene->setup();
 
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
 		// Render to our framebuffer
-		if (mode_debug != 0) glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-		else glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT); // Render on the whole framebuffer, complete from the lower left corner to the upper right
-		my_scene.draw();
-		
+		my_scene->draw(glfwGetTime());
+
 		if (mode_debug != 0) {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			my_deb.draw(my_texture, normal_texture, depth_texture, SCR_WIDTH, SCR_HEIGHT, my_plane);
+			my_deb.draw(SCR_WIDTH, SCR_HEIGHT);
 		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -146,7 +100,7 @@ int main()
 
 		// input
 		// -----
-		processInput(window, &cameraTest, deltaTime);
+		processInput(window, &(my_scene->camera), deltaTime);
 
 	}
 

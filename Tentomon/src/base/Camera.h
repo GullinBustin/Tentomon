@@ -9,6 +9,7 @@
 class Camera
 {
 public:
+	Camera();
 	Camera(float x, float y, float z, float vx, float vy, float vz, float upx, float upy, float upz);
 	Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up);
 	~Camera();

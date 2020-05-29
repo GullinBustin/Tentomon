@@ -1,5 +1,12 @@
 #include "Camera.h"
 
+Camera::Camera()
+{
+	direction = glm::vec3(0, 0, 1);
+	position = glm::vec3(0, 0, 0);
+	up = glm::vec3(0, 1, 0);
+}
+
 Camera::Camera(float x, float y, float z, float vx, float vy, float vz, float upx, float upy, float upz)
 {
 	direction = glm::vec3(vx, vy, vz);

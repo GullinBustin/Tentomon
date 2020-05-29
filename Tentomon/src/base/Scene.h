@@ -4,30 +4,13 @@
 #include <glm/glm.hpp>
 
 #include "Camera.h"
-#include "Instance.h"
 
 class Scene
 {
 public:
-	Scene();
-	~Scene();
+	virtual void setup() = 0;
+	virtual void draw(double currentTime) = 0;
 
-	void setCamera(Camera* cam);
-	void setInstances(Instance* instList, int numInst);
-
-	void draw();
-
-	void setUniforms(Shader shader);
-
-	GLuint framebuffer = 0;
-
-	Instance* instanceList;
-	int numOfInstances;
-
-	Camera* camera;
-
-	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-	glm::vec3 dirLight = glm::vec3(1.0f, 0.0f, 0.0f);
-	glm::vec3 pointLight = glm::vec3(0.0f, 2.0f, -2.0f);
+	Camera camera;
 };
 

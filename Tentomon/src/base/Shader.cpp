@@ -90,6 +90,10 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 }
 
 
+Shader::Shader()
+{
+}
+
 Shader::Shader(const char * vertex_file_path, const char * fragment_file_path)
 {
 	Shader::programID = LoadShaders(vertex_file_path, fragment_file_path);

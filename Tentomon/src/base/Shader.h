@@ -21,6 +21,7 @@ class Shader
 {
 public:
 	GLuint programID;
+	Shader();
 	Shader(const char * vertex_file_path, const char * fragment_file_path);
 	~Shader();
 	map<const GLchar*, GLuint> uniformIds;

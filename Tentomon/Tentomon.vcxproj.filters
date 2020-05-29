@@ -42,7 +42,7 @@
     <ClCompile Include="src\base\Instance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\base\Scene.cpp">
+    <ClCompile Include="src\demo\MyScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\base\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\demo\MyScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\demo\MyScene.cpp" />
     <ClCompile Include="src\base\Camera.cpp" />
     <ClCompile Include="src\base\config.cpp" />
     <ClCompile Include="src\base\Instance.cpp" />
     <ClCompile Include="src\base\Mesh.cpp" />
-    <ClCompile Include="src\base\Scene.cpp" />
     <ClCompile Include="src\base\Shader.cpp" />
     <ClCompile Include="src\base\Texture.cpp" />
     <ClCompile Include="src\Cube.cpp" />
@@ -31,6 +31,7 @@
     <ClCompile Include="src\Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\demo\MyScene.h" />
     <ClInclude Include="src\base\Camera.h" />
     <ClInclude Include="src\base\config.h" />
     <ClInclude Include="src\base\Instance.h" />
