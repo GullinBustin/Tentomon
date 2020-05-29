@@ -11,7 +11,7 @@ MyScene::~MyScene()
 void MyScene::setup()
 {
 	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
-	Mesh* my_cube = new Cube();
+	Mesh* my_cube =  &Cube::getInstance();
 	Scene::camera = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0); //TODO: Fix it
 	Scene::camera.setProjection();
 

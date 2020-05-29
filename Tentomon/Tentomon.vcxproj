@@ -31,6 +31,7 @@
     <ClCompile Include="src\Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\base\Singleton.h" />
     <ClInclude Include="src\demo\MyScene.h" />
     <ClInclude Include="src\base\Camera.h" />
     <ClInclude Include="src\base\config.h" />

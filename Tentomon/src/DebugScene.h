@@ -68,7 +68,7 @@ void DebugScene::setup(unsigned int w, unsigned int h) {
 	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, DrawBuffers); // "1" is the size of DrawBuffers
 
-	plane = new Plane();
+	plane = &Plane::getInstance();
 }
 
 void DebugScene::draw(int w, int h)

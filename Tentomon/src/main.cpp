@@ -35,7 +35,7 @@ const unsigned int SCR_HEIGHT = 600;
 
 int main()
 {
-	int mode_debug = 0;
+	int mode_debug = 1;
 
 	GLFWwindow* window = Config::configureOpenGL(SCR_WIDTH, SCR_HEIGHT);
 

@@ -9,13 +9,12 @@
 class Mesh
 {
 public:
-	Mesh();
-	Mesh(std::vector<float> vertices, std::vector<unsigned int> indices);
-	~Mesh();
 	virtual void draw();
 	unsigned int VAO;
 
 protected:
+	Mesh();
+	~Mesh();
 
 	std::vector<float> vertices;
 	std::vector<unsigned int> indices;
