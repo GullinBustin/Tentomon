@@ -4,6 +4,9 @@ Instance::Instance(Mesh* m, Shader shad) : mesh(m), shader(shad)
 {
 }
 
+Instance::Instance()
+{
+}
 
 Instance::~Instance()
 {
@@ -55,7 +58,7 @@ glm::mat4 Instance::getModelMatrix()
 	glm::vec3 up = glm::rotate(glm::vec3(0, 1, 0), upRotation, direction);
 	return glm::lookAt(
 		position,
-		direction,
+		position + direction,
 		up
 	);
 }

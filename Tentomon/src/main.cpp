@@ -25,6 +25,7 @@
 #include "DebugScene.h"
 
 #include "demo/MyScene.h"
+#include "demo/SBScene.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Camera *my_camera, double deltaTime);
@@ -35,7 +36,7 @@ const unsigned int SCR_HEIGHT = 600;
 
 int main()
 {
-	int mode_debug = 1;
+	int mode_debug = 0;
 
 	GLFWwindow* window = Config::configureOpenGL(SCR_WIDTH, SCR_HEIGHT);
 
@@ -62,7 +63,7 @@ int main()
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		return false;
 
-	Scene* my_scene = new MyScene();
+	Scene* my_scene = new SBScene();
 	my_scene->setup();
 
 	// render loop
@@ -100,7 +101,7 @@ int main()
 
 		// input
 		// -----
-		processInput(window, &(my_scene->camera), deltaTime);
+		//processInput(window, &my_scene->camera, deltaTime);
 
 	}
 

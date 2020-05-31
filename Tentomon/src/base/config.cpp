@@ -45,7 +45,7 @@ GLFWwindow* Config::configureOpenGL(int SCR_WIDTH, int SCR_HEIGHT)
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glfwSwapInterval(1);
 
 	glfwSetCursorPos(window, SCR_WIDTH / 2, SCR_HEIGHT / 2);

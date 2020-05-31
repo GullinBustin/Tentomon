@@ -1,4 +1,5 @@
 #include "MyScene.h"
+#include <glm/glm.hpp>
 
 MyScene::MyScene() {
 
@@ -12,8 +13,8 @@ void MyScene::setup()
 {
 	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
 	Mesh* my_cube =  &Cube::getInstance();
-	Scene::camera = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0); //TODO: Fix it
-	Scene::camera.setProjection();
+	Scene::camera = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0); //TODO: Reference to Scene Camere, not MyScene Camera. Fix it.
+	Scene::camera.setProjection(); 
 
 	my_shader.useShader();
 	my_shader.setUniform("lightColor", lightColor);
@@ -22,7 +23,14 @@ void MyScene::setup()
 	my_shader.stopShader();
 
 	Instance cubeInstance = Instance(my_cube, my_shader);
-	MyScene::instanceList = new Instance[1] { cubeInstance };
+	/*Instance cubeInstance2 = Instance(my_cube, my_shader);
+	Instance cubeInstance3 = Instance(my_cube, my_shader);
+	Instance cubeInstance4 = Instance(my_cube, my_shader);
+	cubeInstance2.setPosition(glm::vec3(10, 0, 0));
+	cubeInstance3.setPosition(glm::vec3(-10, 0, 0));
+	cubeInstance4.setPosition(glm::vec3(0, 10, 0));*/
+
+	MyScene::instanceList = new Instance[1] { cubeInstance};
 	MyScene::numOfInstances = 1;
 
 }

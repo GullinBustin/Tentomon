@@ -45,6 +45,9 @@
     <ClCompile Include="src\demo\MyScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\demo\SBScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\config.h">
@@ -83,6 +86,9 @@
     <ClInclude Include="src\base\Singleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\demo\SBScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\fragmentShader.frag" />
@@ -90,6 +96,11 @@
     <None Include="data\shaders\Passthrough.vert" />
     <None Include="data\shaders\SimpleTexture.frag" />
     <None Include="data\shaders\SimpleDepth.frag" />
+    <None Include="data\shaders\SBShaders\vertex.vert" />
+    <None Include="data\shaders\SBShaders\fragment.frag" />
+    <None Include="data\shaders\SBShaders\geometry.geom" />
+    <None Include="data\shaders\SBShaders\tess_control.tcs" />
+    <None Include="data\shaders\SBShaders\tess_evaluation.tes" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\images\tochos.jpg">

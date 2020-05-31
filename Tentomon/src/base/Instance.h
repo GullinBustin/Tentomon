@@ -11,6 +11,7 @@ class Instance
 {
 public:
 	Instance(Mesh* m, Shader shad);
+	Instance();
 	~Instance();
 
 	void setTexture(Texture* text);

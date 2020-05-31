@@ -27,6 +27,7 @@
     <ClCompile Include="src\base\Shader.cpp" />
     <ClCompile Include="src\base\Texture.cpp" />
     <ClCompile Include="src\Cube.cpp" />
+    <ClCompile Include="src\demo\SBScene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Plane.cpp" />
   </ItemGroup>
@@ -42,9 +43,15 @@
     <ClInclude Include="src\base\Texture.h" />
     <ClInclude Include="src\Cube.h" />
     <ClInclude Include="src\DebugScene.h" />
+    <ClInclude Include="src\demo\SBScene.h" />
     <ClInclude Include="src\Plane.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\shaders\SBShaders\fragment.frag" />
+    <None Include="data\shaders\SBShaders\geometry.geom" />
+    <None Include="data\shaders\SBShaders\tess_control.tcs" />
+    <None Include="data\shaders\SBShaders\tess_evaluation.tes" />
+    <None Include="data\shaders\SBShaders\vertex.vert" />
     <None Include="data\shaders\SimpleDepth.frag" />
     <None Include="data\shaders\fragmentShader.frag" />
     <None Include="data\shaders\Passthrough.vert" />

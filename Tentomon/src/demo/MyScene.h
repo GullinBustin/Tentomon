@@ -13,8 +13,6 @@ public:
 	void setUniforms(Shader shader);
 	void draw(double currentTime);
 
-	GLuint framebuffer = 0;
-
 	Instance* instanceList;
 	int numOfInstances;
 
