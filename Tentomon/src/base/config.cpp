@@ -13,8 +13,8 @@ GLFWwindow* Config::configureOpenGL(int SCR_WIDTH, int SCR_HEIGHT)
 	}
 
 	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
@@ -49,6 +49,9 @@ GLFWwindow* Config::configureOpenGL(int SCR_WIDTH, int SCR_HEIGHT)
 	glfwSwapInterval(1);
 
 	glfwSetCursorPos(window, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPointSize(5.0f);
 
 	return window;
 

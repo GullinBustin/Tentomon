@@ -1,10 +1,18 @@
 #include "Shader.h"
 
-GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path) {
+GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path,
+	const char* tessellation_control_file_path, const char* tessellation_evaluation_file_path,
+	const char* geometry_file_path) {
 
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+	GLuint TessellationControlShaderID = 0;
+	if (tessellation_control_file_path != NULL) TessellationControlShaderID = glCreateShader(GL_TESS_CONTROL_SHADER);
+	GLuint TessellationEvaluationShaderID = 0;
+	if (tessellation_evaluation_file_path != NULL) TessellationEvaluationShaderID = glCreateShader(GL_TESS_EVALUATION_SHADER);
+	GLuint GeometryShaderID = 0;
+	if (geometry_file_path != NULL) GeometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
 
 	// Read the Vertex Shader code from the file
 	std::string VertexShaderCode;
@@ -29,6 +37,42 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 		sstr << FragmentShaderStream.rdbuf();
 		FragmentShaderCode = sstr.str();
 		FragmentShaderStream.close();
+	}
+
+	// Read the Tessellation Control Shader code from the file
+	std::string TessellationControlShaderCode;
+	if (tessellation_control_file_path != NULL) {
+		std::ifstream TessellationControlShaderStream(tessellation_control_file_path, std::ios::in);
+		if (TessellationControlShaderStream.is_open()) {
+			std::stringstream sstr;
+			sstr << TessellationControlShaderStream.rdbuf();
+			TessellationControlShaderCode = sstr.str();
+			TessellationControlShaderStream.close();
+		}
+	}
+
+	// Read the Tessellation Evaluation Shader code from the file
+	std::string TessellationEvaluationShaderCode;
+	if (tessellation_evaluation_file_path != NULL) {
+		std::ifstream TessellationEvaluationShaderStream(tessellation_evaluation_file_path, std::ios::in);
+		if (TessellationEvaluationShaderStream.is_open()) {
+			std::stringstream sstr;
+			sstr << TessellationEvaluationShaderStream.rdbuf();
+			TessellationEvaluationShaderCode = sstr.str();
+			TessellationEvaluationShaderStream.close();
+		}
+	}
+
+	// Read the Geometry Shader code from the file
+	std::string GeometryShaderCode;
+	if (geometry_file_path != NULL) {
+		std::ifstream GeometryShaderStream(geometry_file_path, std::ios::in);
+		if (GeometryShaderStream.is_open()) {
+			std::stringstream sstr;
+			sstr << GeometryShaderStream.rdbuf();
+			GeometryShaderCode = sstr.str();
+			GeometryShaderStream.close();
+		}
 	}
 
 	GLint Result = GL_FALSE;
@@ -64,10 +108,64 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 		printf("%s\n", &FragmentShaderErrorMessage[0]);
 	}
 
+	// Compile Tessellation Control Shader
+	if (tessellation_control_file_path != NULL) {
+		printf("Compiling shader : %s\n", tessellation_control_file_path);
+		char const* TessellationControlSourcePointer = TessellationControlShaderCode.c_str();
+		glShaderSource(TessellationControlShaderID, 1, &TessellationControlSourcePointer, NULL);
+		glCompileShader(TessellationControlShaderID);
+
+		// Check Fragment Shader
+		glGetShaderiv(TessellationControlShaderID, GL_COMPILE_STATUS, &Result);
+		glGetShaderiv(TessellationControlShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+		if (InfoLogLength > 0) {
+			std::vector<char> TessellationControlShaderErrorMessage(InfoLogLength + 1);
+			glGetShaderInfoLog(TessellationControlShaderID, InfoLogLength, NULL, &TessellationControlShaderErrorMessage[0]);
+			printf("%s\n", &TessellationControlShaderErrorMessage[0]);
+		}
+	}
+
+	// Compile Tessellation Evaluation Shader
+	if (tessellation_evaluation_file_path != NULL) {
+		printf("Compiling shader : %s\n", tessellation_evaluation_file_path);
+		char const* TessellationEvaluationSourcePointer = TessellationEvaluationShaderCode.c_str();
+		glShaderSource(TessellationEvaluationShaderID, 1, &TessellationEvaluationSourcePointer, NULL);
+		glCompileShader(TessellationEvaluationShaderID);
+
+		// Check Tessellation Evaluation Shader
+		glGetShaderiv(TessellationEvaluationShaderID, GL_COMPILE_STATUS, &Result);
+		glGetShaderiv(TessellationEvaluationShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+		if (InfoLogLength > 0) {
+			std::vector<char> TessellationEvaluationShaderErrorMessage(InfoLogLength + 1);
+			glGetShaderInfoLog(TessellationEvaluationShaderID, InfoLogLength, NULL, &TessellationEvaluationShaderErrorMessage[0]);
+			printf("%s\n", &TessellationEvaluationShaderErrorMessage[0]);
+		}
+	}
+
+	// Compile Geometry Shader
+	if (geometry_file_path != NULL) {
+		printf("Compiling shader : %s\n", geometry_file_path);
+		char const* GeometrySourcePointer = GeometryShaderCode.c_str();
+		glShaderSource(GeometryShaderID, 1, &GeometrySourcePointer, NULL);
+		glCompileShader(GeometryShaderID);
+
+		// Check Fragment Shader
+		glGetShaderiv(GeometryShaderID, GL_COMPILE_STATUS, &Result);
+		glGetShaderiv(GeometryShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+		if (InfoLogLength > 0) {
+			std::vector<char> GeometryShaderErrorMessage(InfoLogLength + 1);
+			glGetShaderInfoLog(GeometryShaderID, InfoLogLength, NULL, &GeometryShaderErrorMessage[0]);
+			printf("%s\n", &GeometryShaderErrorMessage[0]);
+		}
+	}
+
 	// Link the program
 	printf("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
+	if (tessellation_control_file_path != NULL) glAttachShader(ProgramID, TessellationControlShaderID);
+	if (tessellation_evaluation_file_path != NULL) glAttachShader(ProgramID, TessellationEvaluationShaderID);
+	if (geometry_file_path != NULL) glAttachShader(ProgramID, GeometryShaderID);
 	glAttachShader(ProgramID, FragmentShaderID);
 	glLinkProgram(ProgramID);
 
@@ -86,6 +184,19 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	glDeleteShader(VertexShaderID);
 	glDeleteShader(FragmentShaderID);
 
+	if (tessellation_control_file_path != NULL) {
+		glDetachShader(ProgramID, TessellationControlShaderID);
+		glDeleteShader(TessellationControlShaderID);
+	}
+	if (tessellation_evaluation_file_path != NULL) {
+		glDetachShader(ProgramID, TessellationEvaluationShaderID);
+		glDeleteShader(TessellationEvaluationShaderID);
+	}
+	if (geometry_file_path != NULL) {
+		glDetachShader(ProgramID, GeometryShaderID);
+		glDeleteShader(GeometryShaderID);
+	}
+
 	return ProgramID;
 }
 
@@ -94,9 +205,13 @@ Shader::Shader()
 {
 }
 
-Shader::Shader(const char * vertex_file_path, const char * fragment_file_path)
+Shader::Shader(const char * vertex_file_path, const char * fragment_file_path,
+	const char* tessellation_control_file_path, const char* tessellation_evaluation_file_path,
+	const char* geometry_file_path)
 {
-	Shader::programID = LoadShaders(vertex_file_path, fragment_file_path);
+	Shader::programID = LoadShaders(vertex_file_path, fragment_file_path,
+		tessellation_control_file_path, tessellation_evaluation_file_path,
+		geometry_file_path);
 }
 
 

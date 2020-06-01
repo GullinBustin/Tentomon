@@ -15,14 +15,18 @@ using namespace std;
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
+GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path,
+	const char* tessellation_control_file_path = NULL, const char* tessellation_evaluation_file_path = NULL,
+	const char* geometry_file_path = NULL);
 
 class Shader
 {
 public:
 	GLuint programID;
 	Shader();
-	Shader(const char * vertex_file_path, const char * fragment_file_path);
+	Shader(const char* vertex_file_path, const char* fragment_file_path,
+		const char* tessellation_control_file_path = NULL, const char* tessellation_evaluation_file_path = NULL,
+		const char* geometry_file_path = NULL);
 	~Shader();
 	map<const GLchar*, GLuint> uniformIds;
 	void setUniform(const GLchar* name, int);

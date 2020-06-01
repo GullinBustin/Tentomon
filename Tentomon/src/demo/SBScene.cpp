@@ -13,7 +13,11 @@ SBScene::~SBScene()
 void SBScene::setup()
 {
 	Shader shader = Shader("data/shaders/SBShaders/vertex.vert",
-		"data/shaders/SBShaders/fragment.frag");
+		"data/shaders/SBShaders/fragment.frag",
+		"data/shaders/SBShaders/tess_control.tesc",
+		"data/shaders/SBShaders/tess_evaluation.tese",
+		"data/shaders/SBShaders/geometry.geom");
+		//NULL);
 	Mesh* plane = &Plane::getInstance();
 
 	Scene::camera = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0); //TODO: Reference to Scene Camere, not MyScene Camera. Fix it.

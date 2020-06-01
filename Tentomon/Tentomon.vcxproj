@@ -49,8 +49,8 @@
   <ItemGroup>
     <None Include="data\shaders\SBShaders\fragment.frag" />
     <None Include="data\shaders\SBShaders\geometry.geom" />
-    <None Include="data\shaders\SBShaders\tess_control.tcs" />
-    <None Include="data\shaders\SBShaders\tess_evaluation.tes" />
+    <None Include="data\shaders\SBShaders\tess_control.tesc" />
+    <None Include="data\shaders\SBShaders\tess_evaluation.tese" />
     <None Include="data\shaders\SBShaders\vertex.vert" />
     <None Include="data\shaders\SimpleDepth.frag" />
     <None Include="data\shaders\fragmentShader.frag" />
