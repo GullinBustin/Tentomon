@@ -63,7 +63,7 @@ int main()
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		return false;
 
-	Scene* my_scene = new SBScene();
+	Scene* my_scene = new MyScene();
 	my_scene->setup();
 
 	// render loop
@@ -101,7 +101,7 @@ int main()
 
 		// input
 		// -----
-		//processInput(window, &my_scene->camera, deltaTime);
+		processInput(window, &my_scene->camera, deltaTime);
 
 	}
 

@@ -24,14 +24,13 @@ void SBScene::setup()
 	Scene::camera.setProjection();
 
 	planeInstance = Instance(plane, shader);
-	planeInstance.setPosition(glm::vec3(1, 1, -2));
+	planeInstance.setPosition(glm::vec3(0, 0, -1));
 }
 
 void SBScene::draw(double currentTime)
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	planeInstance.setPosition(glm::vec3(0, 0, 0));
 	camera.setUniforms(planeInstance.shader);
 	planeInstance.draw();
 }

@@ -10,6 +10,7 @@ uniform mat4 P;
 
 out vec3 Normal;
 out vec3 Position;
+out vec2 UV;
 
 void main()
 {
@@ -17,6 +18,6 @@ void main()
     gl_Position = MVP * vec4(aPos,1);
 
 	Position = vec3(M * vec4(aPos, 1));
-	Normal = vec3(M * vec4(aNor, 0));
-
+	Normal = normalize(vec3(M * vec4(aNor, 0)));
+	UV = (aPos.xy+vec2(1,1))/2.0;
 }

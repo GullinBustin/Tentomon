@@ -29,13 +29,35 @@ void Instance::translate(glm::vec3 translate)
 
 void Instance::setPosition(glm::vec3 pos)
 {
-	position = pos;
+	Instance::position = pos;
 }
 
-void Instance::lookAt(glm::vec3 point, float upAngle)
+void Instance::setScale(glm::vec3 scale)
 {
-	direction = point - position;
-	upRotation = upAngle;
+	Instance::scale = scale;
+}
+
+void Instance::setRotation(glm::vec3 euler_angles)
+{
+	rotation = glm::quat(euler_angles);
+}
+
+void Instance::setRotation(glm::vec3 r_direction, float r_angle)
+{
+	rotation = glm::angleAxis(r_angle, r_direction);
+}
+
+void Instance::setBaseModel()
+{
+	base_model_matrix = getModelMatrix();
+	position = glm::vec3(0, 0, 0);
+	scale = glm::vec3(1, 1, 1);
+	rotation = glm::quat(0, 0, 0, 0);
+}
+
+void Instance::resetBaseModel()
+{
+	base_model_matrix = glm::mat4(1);
 }
 
 void Instance::draw()
@@ -55,10 +77,8 @@ void Instance::draw()
 
 glm::mat4 Instance::getModelMatrix()
 {
-	glm::vec3 up = glm::rotate(glm::vec3(0, 1, 0), upRotation, direction);
-	return glm::lookAt(
-		position,
-		position + direction,
-		up
-	);
+	glm::mat4 model = glm::translate(position);
+	model = model * glm::toMat4(rotation);
+	model = glm::scale(model, Instance::scale);
+	return model * base_model_matrix;
 }

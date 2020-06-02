@@ -51,7 +51,7 @@ void Plane::draw() {
 	glBindVertexArray(VAO);
 	glEnableVertexAttribArray(0);
 
-	glDrawArrays(GL_PATCHES, 0, 3 * 2);
+	glDrawArrays(GL_TRIANGLES, 0, 3 * 2);
 
 	glDisableVertexAttribArray(0);
 }
