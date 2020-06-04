@@ -30,6 +30,9 @@ public:
 
 	void draw();
 
+	void useShader();
+	void stopShader();
+
 	glm::mat4 getModelMatrix();
 
 	Mesh* mesh;

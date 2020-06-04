@@ -36,5 +36,8 @@ public:
 	void setUniform(const GLchar *name, glm::mat4, GLboolean transpose = 0);
 	void useShader();
 	void stopShader();
+
+	bool operator==(const Shader& b);
+	bool operator!=(const Shader& b);
 };
 

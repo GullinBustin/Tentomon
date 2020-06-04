@@ -62,7 +62,6 @@ void Instance::resetBaseModel()
 
 void Instance::draw()
 {
-	shader.useShader();
 	shader.setUniform("M", getModelMatrix());
 
 	if (texture != NULL) {
@@ -71,7 +70,13 @@ void Instance::draw()
 	}
 	mesh->draw();
 	if (texture != NULL) texture->stopTexture();
+}
 
+void Instance::useShader() {
+	shader.useShader();
+}
+
+void Instance::stopShader() {
 	shader.stopShader();
 }
 

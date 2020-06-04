@@ -97,11 +97,9 @@ void Camera::oldRotate(float x, float y, float angularSpeed) {
 
 void Camera::setUniforms(Shader shader) //TODO
 {
-	shader.useShader();
 	shader.setUniform("V", getCameraMatrix());
 	shader.setUniform("P", projection);
 	shader.setUniform("cameraPos", position);
-	shader.stopShader();
 }
 
 void Camera::oldTranslate(float x, float y, float linealSpeed) {

@@ -283,3 +283,11 @@ void Shader::stopShader()
 {
 	glUseProgram(0);
 }
+
+bool Shader::operator==(const Shader& b) {
+	return b.programID == programID;
+}
+
+bool Shader::operator!=(const Shader& b) {
+	return b.programID != programID;
+}
