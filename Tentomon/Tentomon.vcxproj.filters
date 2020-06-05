@@ -101,9 +101,32 @@
     <None Include="data\shaders\SBShaders\geometry.geom" />
     <None Include="data\shaders\SBShaders\tess_evaluation.tese" />
     <None Include="data\shaders\SBShaders\tess_control.tesc" />
+    <None Include="data\shaders\cubeMap.vert" />
+    <None Include="data\shaders\cubeMap.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\images\tochos.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\images\window.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\images\skybox\back.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\images\skybox\bottom.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\images\skybox\front.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\images\skybox\left.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\images\skybox\right.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\images\skybox\top.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -47,6 +47,8 @@
     <ClInclude Include="src\Plane.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\shaders\cubeMap.frag" />
+    <None Include="data\shaders\cubeMap.vert" />
     <None Include="data\shaders\SBShaders\fragment.frag" />
     <None Include="data\shaders\SBShaders\geometry.geom" />
     <None Include="data\shaders\SBShaders\tess_control.tesc" />
@@ -59,7 +61,14 @@
     <None Include="data\shaders\vertexShader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="data\images\skybox\back.jpg" />
+    <Image Include="data\images\skybox\bottom.jpg" />
+    <Image Include="data\images\skybox\front.jpg" />
+    <Image Include="data\images\skybox\left.jpg" />
+    <Image Include="data\images\skybox\right.jpg" />
+    <Image Include="data\images\skybox\top.jpg" />
     <Image Include="data\images\tochos.jpg" />
+    <Image Include="data\images\window.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
