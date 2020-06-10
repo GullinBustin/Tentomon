@@ -6,10 +6,14 @@ layout(location = 1) out vec4 normal;
 in vec3 Normal;
 in vec3 Position;
 
-uniform vec3 lightColor;
-uniform vec3 dirLight;
 uniform vec3 cameraPos;
-uniform vec3 pointLight;
+
+layout (std140) uniform Light
+{
+    vec3 lightColor;
+    vec3 dirLight;
+	vec3 pointLight;
+};
 
 void main()
 {

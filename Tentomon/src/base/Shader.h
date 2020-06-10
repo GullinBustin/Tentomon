@@ -34,6 +34,7 @@ public:
 	void setUniform(const GLchar* name, glm::vec2);
 	void setUniform(const GLchar *name, glm::vec3);
 	void setUniform(const GLchar *name, glm::mat4, GLboolean transpose = 0);
+	void setUniformBlock(const GLchar* name, GLuint index);
 	void useShader();
 	void stopShader();
 

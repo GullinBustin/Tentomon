@@ -274,6 +274,17 @@ void Shader::setUniform(const GLchar *name, glm::mat4 value, GLboolean transpose
 	glUniformMatrix4fv(temp_prog_id, 1, transpose, &value[0][0]);
 }
 
+void Shader::setUniformBlock(const GLchar* name, GLuint index)
+{
+	if (Shader::uniformIds.find(name) == Shader::uniformIds.end()) {
+		Shader::uniformIds[name] = glGetUniformBlockIndex(Shader::programID, name);
+	}
+
+	GLuint temp_prog_id = Shader::uniformIds[name];
+
+	glUniformBlockBinding(Shader::programID, temp_prog_id, index);
+}
+
 void Shader::useShader()
 {
 	glUseProgram(Shader::programID);

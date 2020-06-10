@@ -1,5 +1,6 @@
 #include "MyScene.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 MyScene::MyScene() {
 
@@ -16,6 +17,11 @@ void MyScene::setup()
 	Shader cubemap_shader = Shader("data/shaders/cubeMap.vert", "data/shaders/cubeMap.frag");
 	Mesh* my_cube =  &Cube::getInstance();
 	Mesh* floor = &Plane::getInstance();
+
+	my_shader.setUniformBlock("Camera", 0);
+	floor_shader.setUniformBlock("Camera", 0);
+	cubemap_shader.setUniformBlock("Camera", 0);
+	my_shader.setUniformBlock("Light", 1);
 
 	Scene::camera = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0); //TODO: Reference to Scene Camere, not MyScene Camera. Fix it.
 	Scene::camera.setProjection(); 
@@ -70,25 +76,39 @@ void MyScene::setup()
 	
 
 	MyScene::numOfInstances = 2 + n_cubes;
+
+	glGenBuffers(1, &UBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+	glBufferData(GL_UNIFORM_BUFFER, 2 * 256, NULL, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 2 * sizeof(glm::mat4));
+	glBindBufferRange(GL_UNIFORM_BUFFER, 1, UBO, 256, 3 * sizeof(glm::vec3));
 }
 
-void MyScene::setUniforms(Shader shader)
+void MyScene::setUniforms()
 {
-	shader.setUniform("lightColor", lightColor);
-	shader.setUniform("dirLight", dirLight);
-	shader.setUniform("pointLight", pointLight);
-	camera.setUniforms(shader);
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(camera.getCameraMatrix()));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera.projection));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+	glBufferSubData(GL_UNIFORM_BUFFER, 256, sizeof(glm::vec3), glm::value_ptr(lightColor));
+	glBufferSubData(GL_UNIFORM_BUFFER, 256 + sizeof(glm::vec3), sizeof(glm::vec3), glm::value_ptr(dirLight));
+	glBufferSubData(GL_UNIFORM_BUFFER, 256 + 2*sizeof(glm::vec3), sizeof(glm::vec3), glm::value_ptr(pointLight));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void MyScene::draw(double currentTime)
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	setUniforms();
 
 	glDepthMask(GL_FALSE);
 	glDisable(GL_CULL_FACE);
 	cubeMapInstance.useShader();
-	setUniforms(cubeMapInstance.shader);
 	cubeMapInstance.draw();
 	cubeMapInstance.stopShader();
 	glEnable(GL_CULL_FACE);
@@ -96,13 +116,11 @@ void MyScene::draw(double currentTime)
 
 	Shader current_shader = instanceList[0].shader;
 	current_shader.useShader();
-	setUniforms(current_shader);
 	for (int i = 0; i < numOfInstances; i++) {
 		if (current_shader != instanceList[i].shader) {
 			current_shader.stopShader();
 			current_shader = instanceList[i].shader;
 			current_shader.useShader();
-			setUniforms(current_shader);
 		}
 		instanceList[i].draw();
 	}

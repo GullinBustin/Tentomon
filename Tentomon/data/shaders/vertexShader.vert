@@ -5,8 +5,12 @@ layout (location = 1) in vec3 aNor;
 
 // Valores de salida ; serán interpolados para cada fragmento.
 uniform mat4 M;
-uniform mat4 V;
-uniform mat4 P;
+
+layout (std140) uniform Camera
+{
+    mat4 V;
+    mat4 P;
+};
 
 out vec3 Normal;
 out vec3 Position;
