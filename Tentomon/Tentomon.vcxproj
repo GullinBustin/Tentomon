@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\base\UBO.cpp" />
     <ClCompile Include="src\demo\MyScene.cpp" />
     <ClCompile Include="src\base\Camera.cpp" />
     <ClCompile Include="src\base\config.cpp" />
@@ -33,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\Singleton.h" />
+    <ClInclude Include="src\base\UBO.h" />
     <ClInclude Include="src\demo\MyScene.h" />
     <ClInclude Include="src\base\Camera.h" />
     <ClInclude Include="src\base\config.h" />

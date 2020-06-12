@@ -1,6 +1,7 @@
 #include "MyScene.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <typeinfo>
 
 MyScene::MyScene() {
 
@@ -74,30 +75,24 @@ void MyScene::setup()
 	}
 	MyScene::instanceList[1 + n_cubes] = windowInstance;
 	
-
 	MyScene::numOfInstances = 2 + n_cubes;
-
-	glGenBuffers(1, &UBO);
-	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * 256, NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 2 * sizeof(glm::mat4));
-	glBindBufferRange(GL_UNIFORM_BUFFER, 1, UBO, 256, 3 * sizeof(glm::vec3));
+	
+	my_ubo = UBO();
+	my_ubo.addUniform<glm::mat4>("view", 0);
+	my_ubo.addUniform<glm::mat4>("projection", 0);
+	my_ubo.addUniform<glm::vec3>("lightColor", 1);
+	my_ubo.addUniform<glm::vec3>("dirLight", 1);
+	my_ubo.addUniform<glm::vec3>("pointLight", 1);
+	my_ubo.createUBO();
 }
 
 void MyScene::setUniforms()
 {
-	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(camera.getCameraMatrix()));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera.projection));
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-	glBufferSubData(GL_UNIFORM_BUFFER, 256, sizeof(glm::vec3), glm::value_ptr(lightColor));
-	glBufferSubData(GL_UNIFORM_BUFFER, 256 + sizeof(glm::vec3), sizeof(glm::vec3), glm::value_ptr(dirLight));
-	glBufferSubData(GL_UNIFORM_BUFFER, 256 + 2*sizeof(glm::vec3), sizeof(glm::vec3), glm::value_ptr(pointLight));
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	my_ubo.setUniform("view", 0, glm::value_ptr(camera.getCameraMatrix()));
+	my_ubo.setUniform("projection", 0, glm::value_ptr(camera.projection));
+	my_ubo.setUniform("lightColor", 1, glm::value_ptr(lightColor));
+	my_ubo.setUniform("dirLight", 1, glm::value_ptr(dirLight));
+	my_ubo.setUniform("pointLight", 1, glm::value_ptr(pointLight));
 }
 
 void MyScene::draw(double currentTime)
