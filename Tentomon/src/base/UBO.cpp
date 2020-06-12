@@ -1,7 +1,5 @@
 #include "UBO.h"
 
-
-
 UBO::UBO()
 {
 	glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &OFFSET_ALIGNMENT);
@@ -9,6 +7,21 @@ UBO::UBO()
 
 UBO::~UBO()
 {
+}
+
+void UBO::addUniform(const char* name, int index, int var_size)
+{
+	if (uniform_size.find(index) == uniform_size.end()) {
+		uniform_size[index] = 0;
+		range_order.push_back(index);
+	}
+
+	data_location temp_dl;
+	temp_dl.size = var_size;
+	temp_dl.offset = uniform_size[index];
+	uniform_variables[index][name] = temp_dl;
+
+	uniform_size[index] += var_size;
 }
 
 int UBO::calculateRealSize()

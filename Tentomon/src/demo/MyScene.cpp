@@ -78,11 +78,11 @@ void MyScene::setup()
 	MyScene::numOfInstances = 2 + n_cubes;
 	
 	my_ubo = UBO();
-	my_ubo.addUniform<glm::mat4>("view", 0);
-	my_ubo.addUniform<glm::mat4>("projection", 0);
-	my_ubo.addUniform<glm::vec3>("lightColor", 1);
-	my_ubo.addUniform<glm::vec3>("dirLight", 1);
-	my_ubo.addUniform<glm::vec3>("pointLight", 1);
+	my_ubo.addUniform("view", 0, sizeof(glm::mat4));
+	my_ubo.addUniform("projection", 0, sizeof(glm::mat4));
+	my_ubo.addUniform("lightColor", 1, sizeof(glm::vec3));
+	my_ubo.addUniform("dirLight", 1, sizeof(glm::vec3));
+	my_ubo.addUniform("pointLight", 1, sizeof(glm::vec3));
 	my_ubo.createUBO();
 }
 
