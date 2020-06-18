@@ -5,6 +5,7 @@
 #include "../Plane.h"
 #include "../base/Instance.h"
 #include "../base/UBO.h"
+#include "../base/ObjectMesh.h"
 
 class MyScene : public Scene
 {
@@ -21,8 +22,7 @@ public:
 	UBO my_ubo;
 
 	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-	glm::vec3 dirLight = glm::vec3(1.0f, 0.0f, 0.0f);
-	glm::vec3 pointLight = glm::vec3(0.0f, 4.0f, 0.0f);
-
+	glm::vec3 dirLight = glm::vec3(1.0f, 0.0f, -1.0f);
+	glm::vec3 pointLight = glm::vec3(0.0f, 10.0f, 10.0f);
 };
 

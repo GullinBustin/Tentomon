@@ -1,7 +1,10 @@
 #include "MyScene.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <typeinfo>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 MyScene::MyScene() {
 
@@ -16,13 +19,23 @@ void MyScene::setup()
 	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
 	Shader floor_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/SimpleTexture.frag");
 	Shader cubemap_shader = Shader("data/shaders/cubeMap.vert", "data/shaders/cubeMap.frag");
+	Shader obj_shader = Shader("data/shaders/objShader.vert", "data/shaders/objShader.frag");
 	Mesh* my_cube =  &Cube::getInstance();
 	Mesh* floor = &Plane::getInstance();
+
+	Assimp::Importer importer;
+	//const aiScene* trol_scene = importer.ReadFile("data/models/trol.obj", aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
+	const aiScene* trol_scene = importer.ReadFile("data/models/trol.glb", aiProcess_Triangulate |  aiProcess_GenNormals);
+
+	Mesh* my_trol = new ObjectMesh(trol_scene, 0);
 
 	my_shader.setUniformBlock("Camera", 0);
 	floor_shader.setUniformBlock("Camera", 0);
 	cubemap_shader.setUniformBlock("Camera", 0);
+	obj_shader.setUniformBlock("Camera", 0);
+
 	my_shader.setUniformBlock("Light", 1);
+	obj_shader.setUniformBlock("Light", 1);
 
 	Scene::camera = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0); //TODO: Reference to Scene Camere, not MyScene Camera. Fix it.
 	Scene::camera.setProjection(); 
@@ -31,8 +44,16 @@ void MyScene::setup()
 	t_floor->loadTexture2D("data/images/tochos.jpg");
 
 	Texture* t_window = new Texture();
-	t_window->loadTexture2D("data/images/window.png", GL_RGBA);
-	
+	t_window->loadTexture2D("data/images/window.png");
+
+	Texture* t_trol = new Texture();
+	aiMaterial* my_material = trol_scene->mMaterials[0];
+	aiString str;
+	my_material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
+	const aiTexture* trol_texture = trol_scene->GetEmbeddedTexture(str.C_Str());
+	t_trol->createTextureFromAiTexture(trol_texture);
+	//t_trol->loadTexture2D(str.C_Str());
+
 	Texture* t_cubemap = new Texture(GL_TEXTURE_CUBE_MAP);
 	vector<std::string> faces
 	{
@@ -61,10 +82,25 @@ void MyScene::setup()
 
 	MyScene::cubeMapInstance = cubeMapInstance;
 
-	const int n_cubes = 1000;
-	const int x_cubes = 32;
-	
-	MyScene::instanceList = new Instance[2 + n_cubes]{ planeInstance };
+	const int n_cubes = 9;
+	const int x_cubes = 3;
+
+	MyScene::instanceList = new Instance[1];
+
+	Instance cubeInstance = Instance(my_cube, my_shader);
+	cubeInstance.setPosition(glm::vec3(0,0,0));
+
+	Instance trolInstance = Instance(my_trol, obj_shader);
+	trolInstance.setPosition(glm::vec3(0, 0, 0));
+	//trolInstance.setScale(glm::vec3(10, 10, 10));
+	//trolInstance.setRotation(glm::vec3(-90, 0, 0));
+	trolInstance.setTexture(t_trol);
+
+	MyScene::instanceList[0] = trolInstance;
+	MyScene::numOfInstances = 1;
+
+	/*
+	MyScene::instanceList = new Instance[2 + n_cubes + 1]{ planeInstance };
 	
 	for (int i = 0; i < n_cubes; i++) {
 		float x = i % x_cubes;
@@ -73,10 +109,15 @@ void MyScene::setup()
 		cubeInstance.setPosition(glm::vec3(x * 4 - (x_cubes * 4. / 2), y * 3, -1));
 		MyScene::instanceList[i + 1] = cubeInstance;
 	}
-	MyScene::instanceList[1 + n_cubes] = windowInstance;
+
+	Instance trolInstance = Instance(my_trol, my_shader);
+	trolInstance.setPosition(glm::vec3(0,0,0));
+	trolInstance.setScale(glm::vec3(10, 10, 10));
+	MyScene::instanceList[1 + n_cubes] = trolInstance;
+	MyScene::instanceList[2 + n_cubes] = windowInstance;
 	
-	MyScene::numOfInstances = 2 + n_cubes;
-	
+	MyScene::numOfInstances = 2 + n_cubes + 1;
+	*/
 	my_ubo = UBO();
 	my_ubo.addUniform("view", 0, sizeof(glm::mat4));
 	my_ubo.addUniform("projection", 0, sizeof(glm::mat4));

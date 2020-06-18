@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\base\ObjectInstance.cpp" />
+    <ClCompile Include="src\base\ObjectMesh.cpp" />
     <ClCompile Include="src\base\UBO.cpp" />
     <ClCompile Include="src\demo\MyScene.cpp" />
     <ClCompile Include="src\base\Camera.cpp" />
@@ -33,6 +35,8 @@
     <ClCompile Include="src\Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\base\ObjectInstance.h" />
+    <ClInclude Include="src\base\ObjectMesh.h" />
     <ClInclude Include="src\base\Singleton.h" />
     <ClInclude Include="src\base\UBO.h" />
     <ClInclude Include="src\demo\MyScene.h" />
@@ -49,8 +53,15 @@
     <ClInclude Include="src\Plane.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\models\Cubo.mtl" />
+    <None Include="data\models\trol.3mf" />
+    <None Include="data\models\trol.fbx" />
+    <None Include="data\models\trol.glb" />
+    <None Include="data\models\trol.mtl" />
     <None Include="data\shaders\cubeMap.frag" />
     <None Include="data\shaders\cubeMap.vert" />
+    <None Include="data\shaders\objShader.frag" />
+    <None Include="data\shaders\objShader.vert" />
     <None Include="data\shaders\SBShaders\fragment.frag" />
     <None Include="data\shaders\SBShaders\geometry.geom" />
     <None Include="data\shaders\SBShaders\tess_control.tesc" />
@@ -71,6 +82,7 @@
     <Image Include="data\images\skybox\top.jpg" />
     <Image Include="data\images\tochos.jpg" />
     <Image Include="data\images\window.png" />
+    <Image Include="data\models\7.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -146,6 +158,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

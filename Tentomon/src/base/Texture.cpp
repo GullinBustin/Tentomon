@@ -26,7 +26,38 @@ void Texture::emptyTexture(int width, int height) {
 
 }
 
-void Texture::loadTexture2D(char const* filename, int image_format) {
+void Texture::createTextureFromAiTexture(const aiTexture* texture) {
+	int width, height, nrChannels;
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	unsigned char* data;
+	if (texture->mHeight == 0) {
+		data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData),
+			texture->mWidth, &width, &height, &nrChannels, 0);
+	}
+	else {
+		data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData),
+			texture->mWidth * texture->mHeight, &width, &height, &nrChannels, 0);
+	}
+	if (nrChannels == 3)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	}
+	else
+	if (nrChannels == 4)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	stbi_image_free(data);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Texture::loadTexture2D(char const* filename) {
 	stbi_set_flip_vertically_on_load(true);
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -35,7 +66,15 @@ void Texture::loadTexture2D(char const* filename, int image_format) {
 	unsigned char* data = stbi_load(filename, &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, image_format, width, height, 0, image_format, GL_UNSIGNED_BYTE, data);
+		if (nrChannels == 3)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		}
+		else
+		if (nrChannels == 4)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		}
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
