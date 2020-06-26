@@ -16,7 +16,7 @@ public:
 	void setUniforms();
 	void draw(double currentTime);
 
-	Instance* instanceList;
+	vector<Instance> instanceList;
 	int numOfInstances;
 	Instance cubeMapInstance;
 	UBO my_ubo;

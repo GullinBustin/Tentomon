@@ -27,6 +27,8 @@ void Texture::emptyTexture(int width, int height) {
 }
 
 void Texture::createTextureFromAiTexture(const aiTexture* texture) {
+	stbi_set_flip_vertically_on_load(true);
+
 	int width, height, nrChannels;
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	unsigned char* data;

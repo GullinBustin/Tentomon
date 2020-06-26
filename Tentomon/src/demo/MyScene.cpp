@@ -17,6 +17,7 @@ MyScene::~MyScene()
 void MyScene::setup()
 {
 	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
+	Shader color_shader = Shader("data/shaders/objColorShader.vert", "data/shaders/objColorShader.frag");
 	Shader floor_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/SimpleTexture.frag");
 	Shader cubemap_shader = Shader("data/shaders/cubeMap.vert", "data/shaders/cubeMap.frag");
 	Shader obj_shader = Shader("data/shaders/objShader.vert", "data/shaders/objShader.frag");
@@ -25,10 +26,33 @@ void MyScene::setup()
 
 	Assimp::Importer importer;
 	//const aiScene* trol_scene = importer.ReadFile("data/models/trol.obj", aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
-	const aiScene* trol_scene = importer.ReadFile("data/models/trol.glb", aiProcess_Triangulate |  aiProcess_GenNormals);
-
+	const aiScene* trol_scene = importer.ReadFile("data/models/trol.glb", aiProcess_Triangulate | aiProcess_GenNormals);
 	Mesh* my_trol = new ObjectMesh(trol_scene, 0);
+	Texture* t_trol = new Texture();
+	aiMaterial* my_material = trol_scene->mMaterials[0];
+	aiString str;
+	my_material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
+	const aiTexture* trol_texture = trol_scene->GetEmbeddedTexture(str.C_Str());
+	t_trol->createTextureFromAiTexture(trol_texture);
+	//t_trol->loadTexture2D(str.C_Str());
 
+	const aiScene* olaf_scene = importer.ReadFile("data/models/olafHead.obj", aiProcess_Triangulate | aiProcess_GenNormals);
+	Mesh* my_olaf = new ObjectMesh(olaf_scene, 0);
+	
+	const aiScene* papel_scene = importer.ReadFile("data/models/papel vater.obj", aiProcess_Triangulate | aiProcess_GenNormals);
+	Mesh* my_papel = new ObjectMesh(papel_scene, 0);
+
+	const aiScene* subaru_scene = importer.ReadFile("data/models/subaru legacy obj.obj", aiProcess_Triangulate | aiProcess_GenNormals);
+	
+	vector<Mesh*> subaru_parts;
+	for (int i = 0; i < subaru_scene->mNumMeshes; i++) {
+		Mesh* temp_my_subaru = new ObjectMesh(subaru_scene, i);
+		Instance subaruInstance = Instance(temp_my_subaru, my_shader);
+		subaruInstance.setPosition(glm::vec3(-10, 0, 0));
+		subaruInstance.setScale(glm::vec3(0.01, 0.01, 0.01));
+		instanceList.push_back(subaruInstance);
+	}
+	
 	my_shader.setUniformBlock("Camera", 0);
 	floor_shader.setUniformBlock("Camera", 0);
 	cubemap_shader.setUniformBlock("Camera", 0);
@@ -37,7 +61,7 @@ void MyScene::setup()
 	my_shader.setUniformBlock("Light", 1);
 	obj_shader.setUniformBlock("Light", 1);
 
-	Scene::camera = Camera(0, 0, 3, 0, 0, -1, 0, 1, 0); //TODO: Reference to Scene Camere, not MyScene Camera. Fix it.
+	Scene::camera = Camera(0, 0, 10, 0, 0, -1, 0, 1, 0); //TODO: Reference to Scene Camere, not MyScene Camera. Fix it.
 	Scene::camera.setProjection(); 
 
 	Texture* t_floor = new Texture();
@@ -45,14 +69,6 @@ void MyScene::setup()
 
 	Texture* t_window = new Texture();
 	t_window->loadTexture2D("data/images/window.png");
-
-	Texture* t_trol = new Texture();
-	aiMaterial* my_material = trol_scene->mMaterials[0];
-	aiString str;
-	my_material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
-	const aiTexture* trol_texture = trol_scene->GetEmbeddedTexture(str.C_Str());
-	t_trol->createTextureFromAiTexture(trol_texture);
-	//t_trol->loadTexture2D(str.C_Str());
 
 	Texture* t_cubemap = new Texture(GL_TEXTURE_CUBE_MAP);
 	vector<std::string> faces
@@ -85,19 +101,25 @@ void MyScene::setup()
 	const int n_cubes = 9;
 	const int x_cubes = 3;
 
-	MyScene::instanceList = new Instance[1];
-
 	Instance cubeInstance = Instance(my_cube, my_shader);
 	cubeInstance.setPosition(glm::vec3(0,0,0));
 
 	Instance trolInstance = Instance(my_trol, obj_shader);
 	trolInstance.setPosition(glm::vec3(0, 0, 0));
-	//trolInstance.setScale(glm::vec3(10, 10, 10));
-	//trolInstance.setRotation(glm::vec3(-90, 0, 0));
 	trolInstance.setTexture(t_trol);
 
-	MyScene::instanceList[0] = trolInstance;
-	MyScene::numOfInstances = 1;
+	Instance olafInstance = Instance(my_olaf, my_shader);
+	olafInstance.setPosition(glm::vec3(3, 2, 0));
+
+	Instance papelInstance = Instance(my_papel, my_shader);
+	papelInstance.setPosition(glm::vec3(10, -10, 0));
+	papelInstance.setScale(glm::vec3(0.01, 0.01, 0.01));
+	papelInstance.setBaseModel();
+	papelInstance.setPosition(glm::vec3(-4, 0, 0));
+
+	MyScene::instanceList.push_back(trolInstance);
+	MyScene::instanceList.push_back(olafInstance);
+	MyScene::instanceList.push_back(papelInstance);
 
 	/*
 	MyScene::instanceList = new Instance[2 + n_cubes + 1]{ planeInstance };
@@ -152,7 +174,7 @@ void MyScene::draw(double currentTime)
 
 	Shader current_shader = instanceList[0].shader;
 	current_shader.useShader();
-	for (int i = 0; i < numOfInstances; i++) {
+	for (int i = 0; i < instanceList.size(); i++) {
 		if (current_shader != instanceList[i].shader) {
 			current_shader.stopShader();
 			current_shader = instanceList[i].shader;
