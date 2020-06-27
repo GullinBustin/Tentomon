@@ -45,14 +45,13 @@ void MyScene::setup()
 	const aiScene* subaru_scene = importer.ReadFile("data/models/subaru legacy obj.obj", aiProcess_Triangulate | aiProcess_GenNormals);
 	
 	vector<Mesh*> subaru_parts;
-	for (int i = 0; i < subaru_scene->mNumMeshes; i++) {
-		Mesh* temp_my_subaru = new ObjectMesh(subaru_scene, i);
-		Instance subaruInstance = Instance(temp_my_subaru, my_shader);
-		subaruInstance.setPosition(glm::vec3(-10, 0, 0));
-		subaruInstance.setScale(glm::vec3(0.01, 0.01, 0.01));
-		instanceList.push_back(subaruInstance);
-	}
-	
+
+	Mesh* temp_my_subaru = new ObjectMesh(subaru_scene, -1);
+	Instance subaruInstance = Instance(temp_my_subaru, my_shader);
+	subaruInstance.setPosition(glm::vec3(-10, 0, 0));
+	subaruInstance.setScale(glm::vec3(0.01, 0.01, 0.01));
+	instanceList.push_back(subaruInstance);
+
 	my_shader.setUniformBlock("Camera", 0);
 	floor_shader.setUniformBlock("Camera", 0);
 	cubemap_shader.setUniformBlock("Camera", 0);

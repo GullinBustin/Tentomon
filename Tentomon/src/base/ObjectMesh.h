@@ -12,5 +12,10 @@ public:
     void draw();
 
     const aiScene* my_scene;
+
+private:
+    void fillVertexMesh(aiMesh* theMesh, int vertex_step, int normal_step, int uv_step, int color_step);
+    void fillVertexMultiMesh(const aiScene* scene, bool normals, bool UVs, bool colors);
+
 };
 

@@ -3,7 +3,9 @@
 ObjectMesh::ObjectMesh(const aiScene* scene, int mesh_index)
 {
 	my_scene = scene;
-	aiMesh* theMesh = scene->mMeshes[mesh_index];
+	aiMesh* theMesh;
+	if (mesh_index == -1) theMesh = scene->mMeshes[0];
+	else theMesh = scene->mMeshes[mesh_index];
 
 	bool UVs = theMesh->HasTextureCoords(0);
 	bool normals = theMesh->HasNormals();
@@ -28,41 +30,8 @@ ObjectMesh::ObjectMesh(const aiScene* scene, int mesh_index)
 		color_step = 0;
 	}
 
-	vertices = std::vector<float>(theMesh->mNumVertices * vertex_step, 0.0f);
-	indices = std::vector<unsigned int>(theMesh->mNumFaces * 3, 0.0f);
-
-	aiVector3D* obj_vertex = theMesh->mVertices;
-	aiVector3D* obj_normals = theMesh->mNormals;
-	aiVector3D* obj_uv = theMesh->mTextureCoords[0];
-	aiColor4D* obj_color = theMesh->mColors[0];
-	aiFace* obj_faces = theMesh->mFaces;
-
-	for (int i = 0; i < theMesh->mNumVertices; i++) {
-		vertices[i * vertex_step] = obj_vertex[i].x;
-		vertices[i * vertex_step + 1] = obj_vertex[i].y;
-		vertices[i * vertex_step + 2] = obj_vertex[i].z;
-		if (normals) {
-			vertices[i * vertex_step + normal_step] = obj_normals[i].x;
-			vertices[i * vertex_step + 1 + normal_step] = obj_normals[i].y;
-			vertices[i * vertex_step + 2 + normal_step] = obj_normals[i].z;
-		}
-		if (UVs) {
-			vertices[i * vertex_step + uv_step] = obj_uv[i].x;
-			vertices[i * vertex_step + 1 + uv_step] = obj_uv[i].y;
-		}
-		if (colors) {
-			vertices[i * vertex_step + color_step] = obj_color[i].r;
-			vertices[i * vertex_step + 1 + color_step] = obj_color[i].g;
-			vertices[i * vertex_step + 2 + color_step] = obj_color[i].b;
-			vertices[i * vertex_step + 3 + color_step] = obj_color[i].a;
-		}
-	}
-
-	for (int i = 0; i < theMesh->mNumFaces; i++) {
-		indices[i * 3] = obj_faces[i].mIndices[0];
-		indices[i * 3 + 1] = obj_faces[i].mIndices[1];
-		indices[i * 3 + 2] = obj_faces[i].mIndices[2];
-	}
+	if (mesh_index == -1) fillVertexMultiMesh(scene, normals, UVs, colors);
+	else fillVertexMesh(theMesh, vertex_step, normal_step, uv_step, color_step);
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -120,6 +89,94 @@ ObjectMesh::ObjectMesh(const aiScene* scene, int mesh_index)
 
 	glBindVertexArray(0);
 
+}
+
+void ObjectMesh::fillVertexMesh(aiMesh* theMesh, int vertex_step, int normal_step, int uv_step, int color_step) {
+
+	vertices = std::vector<float>(theMesh->mNumVertices * vertex_step, 0.0f);
+	indices = std::vector<unsigned int>(theMesh->mNumFaces * 3, 0.0f);
+
+	aiVector3D* obj_vertex = theMesh->mVertices;
+	aiVector3D* obj_normals = theMesh->mNormals;
+	aiVector3D* obj_uv = theMesh->mTextureCoords[0];
+	aiColor4D* obj_color = theMesh->mColors[0];
+	aiFace* obj_faces = theMesh->mFaces;
+
+	for (int i = 0; i < theMesh->mNumVertices; i++) {
+		vertices[i * vertex_step] = obj_vertex[i].x;
+		vertices[i * vertex_step + 1] = obj_vertex[i].y;
+		vertices[i * vertex_step + 2] = obj_vertex[i].z;
+		if (normal_step != 0) {
+			vertices[i * vertex_step + normal_step] = obj_normals[i].x;
+			vertices[i * vertex_step + 1 + normal_step] = obj_normals[i].y;
+			vertices[i * vertex_step + 2 + normal_step] = obj_normals[i].z;
+		}
+		if (uv_step != 0) {
+			vertices[i * vertex_step + uv_step] = obj_uv[i].x;
+			vertices[i * vertex_step + 1 + uv_step] = obj_uv[i].y;
+		}
+		if (color_step != 0) {
+			vertices[i * vertex_step + color_step] = obj_color[i].r;
+			vertices[i * vertex_step + 1 + color_step] = obj_color[i].g;
+			vertices[i * vertex_step + 2 + color_step] = obj_color[i].b;
+			vertices[i * vertex_step + 3 + color_step] = obj_color[i].a;
+		}
+	}
+
+	for (int i = 0; i < theMesh->mNumFaces; i++) {
+		indices[i * 3] = obj_faces[i].mIndices[0];
+		indices[i * 3 + 1] = obj_faces[i].mIndices[1];
+		indices[i * 3 + 2] = obj_faces[i].mIndices[2];
+	}
+}
+
+void ObjectMesh::fillVertexMultiMesh(const aiScene* scene, bool normals, bool UVs, bool colors) {
+
+	int mesh_off = 0;
+	int off_set_2_add = 0;
+
+	for (int i = 0; i < scene->mNumMeshes; i++) {
+		aiMesh* theMesh = scene->mMeshes[i];
+		
+		aiVector3D* obj_vertex = theMesh->mVertices;
+		aiVector3D* obj_normals = theMesh->mNormals;
+		aiVector3D* obj_uv = theMesh->mTextureCoords[0];
+		aiColor4D* obj_color = theMesh->mColors[0];
+		aiFace* obj_faces = theMesh->mFaces;
+
+		for (int i = 0; i < theMesh->mNumVertices; i++) {
+			
+			off_set_2_add += 1;
+
+			vertices.push_back(obj_vertex[i].x);
+			vertices.push_back(obj_vertex[i].y);
+			vertices.push_back(obj_vertex[i].z);
+			if (normals) {
+				vertices.push_back(obj_normals[i].x);
+				vertices.push_back(obj_normals[i].y);
+				vertices.push_back(obj_normals[i].z);
+			}
+			if (UVs) {
+				vertices.push_back(obj_uv[i].x);
+				vertices.push_back(obj_uv[i].y);
+			}
+			if (colors) {
+				vertices.push_back(obj_color[i].r);
+				vertices.push_back(obj_color[i].g);
+				vertices.push_back(obj_color[i].b);
+				vertices.push_back(obj_color[i].a);
+			}
+		}
+
+		for (int i = 0; i < theMesh->mNumFaces; i++) {
+			indices.push_back(obj_faces[i].mIndices[0] + mesh_off);
+			indices.push_back(obj_faces[i].mIndices[1] + mesh_off);
+			indices.push_back(obj_faces[i].mIndices[2] + mesh_off);
+		}
+
+		mesh_off += off_set_2_add;
+		off_set_2_add = 0;
+	}
 }
 
 ObjectMesh::~ObjectMesh()
