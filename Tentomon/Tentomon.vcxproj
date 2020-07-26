@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\base\MultiInstance.cpp" />
     <ClCompile Include="src\base\ObjectInstance.cpp" />
     <ClCompile Include="src\base\ObjectMesh.cpp" />
     <ClCompile Include="src\base\UBO.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="src\Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\base\MultiInstance.h" />
     <ClInclude Include="src\base\ObjectInstance.h" />
     <ClInclude Include="src\base\ObjectMesh.h" />
     <ClInclude Include="src\base\Singleton.h" />
@@ -54,12 +56,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\models\Cubo.mtl" />
+    <None Include="data\models\Tentomon.mtl" />
     <None Include="data\models\trol.3mf" />
     <None Include="data\models\trol.fbx" />
     <None Include="data\models\trol.glb" />
     <None Include="data\models\trol.mtl" />
+    <None Include="data\shaders\instanceShader.vert" />
+    <None Include="data\shaders\instanceShader.frag" />
     <None Include="data\shaders\cubeMap.frag" />
     <None Include="data\shaders\cubeMap.vert" />
+    <None Include="data\shaders\objColorShader.frag" />
+    <None Include="data\shaders\objColorShader.vert" />
     <None Include="data\shaders\objShader.frag" />
     <None Include="data\shaders\objShader.vert" />
     <None Include="data\shaders\SBShaders\fragment.frag" />
@@ -83,6 +90,7 @@
     <Image Include="data\images\tochos.jpg" />
     <Image Include="data\images\window.png" />
     <Image Include="data\models\7.png" />
+    <Image Include="data\models\Tentomon.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

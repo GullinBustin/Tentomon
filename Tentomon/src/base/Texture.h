@@ -12,7 +12,7 @@ public:
 	~Texture();
 	void emptyTexture(int width, int height);
 	void createTextureFromAiTexture(const aiTexture* texture);
-	void loadTexture2D(char const* filename);
+	void loadTexture2D(char const* filename, bool flip_texture = true);
 	void loadCubeMap(std::vector<std::string> faces, int image_format = GL_RGB);
 	void useTexture(unsigned int textureNumber = GL_TEXTURE0);
 	void stopTexture();

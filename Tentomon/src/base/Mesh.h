@@ -10,6 +10,7 @@ class Mesh
 {
 public:
 	virtual void draw();
+	virtual void drawInstances(int n);
 	unsigned int VAO;
 
 protected:

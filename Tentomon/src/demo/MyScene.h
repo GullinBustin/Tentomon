@@ -6,6 +6,7 @@
 #include "../base/Instance.h"
 #include "../base/UBO.h"
 #include "../base/ObjectMesh.h"
+#include "../base/MultiInstance.h"
 
 class MyScene : public Scene
 {
@@ -17,6 +18,7 @@ public:
 	void draw(double currentTime);
 
 	vector<Instance> instanceList;
+	MultiInstance multi;
 	int numOfInstances;
 	Instance cubeMapInstance;
 	UBO my_ubo;

@@ -4,6 +4,10 @@ void Mesh::draw()
 {
 }
 
+void Mesh::drawInstances(int n)
+{
+}
+
 Mesh::Mesh()
 {
 }

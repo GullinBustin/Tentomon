@@ -13,5 +13,6 @@ public:
 	Cube();
 	~Cube();
 	void draw();
+	void drawInstances(int n);
 };
 

@@ -59,8 +59,8 @@ void Texture::createTextureFromAiTexture(const aiTexture* texture) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::loadTexture2D(char const* filename) {
-	stbi_set_flip_vertically_on_load(true);
+void Texture::loadTexture2D(char const* filename, bool flip_texture) {
+	stbi_set_flip_vertically_on_load(flip_texture);
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	

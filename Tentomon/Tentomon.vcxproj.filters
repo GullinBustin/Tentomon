@@ -57,6 +57,9 @@
     <ClCompile Include="src\base\ObjectMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\base\MultiInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\config.h">
@@ -107,6 +110,9 @@
     <ClInclude Include="src\base\ObjectMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\base\MultiInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\fragmentShader.frag" />
@@ -128,6 +134,11 @@
     <None Include="data\models\trol.3mf" />
     <None Include="data\models\trol.glb" />
     <None Include="data\models\trol.fbx" />
+    <None Include="data\shaders\objColorShader.vert" />
+    <None Include="data\shaders\objColorShader.frag" />
+    <None Include="data\models\Tentomon.mtl" />
+    <None Include="data\shaders\instanceShader.frag" />
+    <None Include="data\shaders\instanceShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\images\tochos.jpg">
@@ -155,6 +166,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="data\models\7.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\models\Tentomon.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
