@@ -18,7 +18,7 @@ public:
 	void draw(double currentTime);
 
 	vector<Instance> instanceList;
-	MultiInstance multi;
+	vector<MultiInstance> multiInstanceList;
 	int numOfInstances;
 	Instance cubeMapInstance;
 	UBO my_ubo;

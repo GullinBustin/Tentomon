@@ -67,6 +67,7 @@
     <None Include="data\shaders\cubeMap.vert" />
     <None Include="data\shaders\objColorShader.frag" />
     <None Include="data\shaders\objColorShader.vert" />
+    <None Include="data\shaders\objInstanceShader.vert" />
     <None Include="data\shaders\objShader.frag" />
     <None Include="data\shaders\objShader.vert" />
     <None Include="data\shaders\SBShaders\fragment.frag" />

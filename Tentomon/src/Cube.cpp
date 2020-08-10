@@ -124,23 +124,13 @@ Cube::Cube()
 }
 
 void Cube::draw() {
-
 	glBindVertexArray(VAO);
-	//glEnableVertexAttribArray(0);
-
 	glDrawArrays(GL_TRIANGLES, 0, 3 * 2 * 6);
-
-	//glDisableVertexAttribArray(0);
 }
 
 void Cube::drawInstances(int n) {
 	glBindVertexArray(VAO);
-	//glEnableVertexAttribArray(0);
-
-	//glDrawArrays(GL_TRIANGLES, 0, 3 * 2 * 6);
 	glDrawArraysInstanced(GL_TRIANGLES, 0, 3 * 2 * 6, n);
-
-	//glDisableVertexAttribArray(0);
 }
 
 Cube::~Cube()

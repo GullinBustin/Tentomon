@@ -17,6 +17,7 @@ MyScene::~MyScene()
 void MyScene::setup()
 {
 	Shader instance_shader = Shader("data/shaders/instanceShader.vert", "data/shaders/instanceShader.frag");
+	Shader obj_instance_shader = Shader("data/shaders/objInstanceShader.vert", "data/shaders/objShader.frag");
 	Shader my_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/fragmentShader.frag");
 	//Shader color_shader = Shader("data/shaders/objColorShader.vert", "data/shaders/objColorShader.frag");
 	Shader floor_shader = Shader("data/shaders/vertexShader.vert", "data/shaders/SimpleTexture.frag");
@@ -92,8 +93,8 @@ void MyScene::setup()
 
 	MyScene::cubeMapInstance = cubeMapInstance;
 
-	const int n_cubes = 10000;
-	const int x_cubes = 100;
+	const int n_cubes = 9;
+	const int x_cubes = 3;
 
 	//Instance cubeInstance = Instance(my_cube, my_shader);
 	//cubeInstance.setPosition(glm::vec3(0,0,0));
@@ -109,14 +110,27 @@ void MyScene::setup()
 	MyScene::instanceList.push_back(planeInstance);
 	//MyScene::instanceList.push_back(windowInstance);
 	
-	multi = MultiInstance(my_cube, instance_shader, n_cubes);
-
+	MultiInstance multi = MultiInstance(my_cube, instance_shader, n_cubes);
+	multi.setPosition(glm::vec3(-3, 7, 0), -1);
 	for (int i = 0; i < n_cubes; i++) {
 		float x = i % x_cubes;
 		float y = i / x_cubes;
 		multi.setPosition(glm::vec3(x * 4 - (x_cubes * 4. / 2), y * 3 -(x_cubes * 4. / 2), -1), i);
 	}
 	multi.calculateModels();
+
+	MultiInstance multi2 = MultiInstance(my_trol, obj_instance_shader, n_cubes);
+	multi2.setPosition(glm::vec3(10, 7, 0), -1);
+	multi2.setTexture(t_trol);
+	for (int i = 0; i < n_cubes; i++) {
+		float x = i % x_cubes;
+		float y = i / x_cubes;
+		multi2.setPosition(glm::vec3(x * 4 - (x_cubes * 4. / 2), y * 3 - (x_cubes * 4. / 2), -1), i);
+	}
+	multi2.calculateModels();
+
+	multiInstanceList.push_back(multi);
+	multiInstanceList.push_back(multi2);
 
 	my_ubo = UBO();
 	my_ubo.addUniform("view", 0, sizeof(glm::mat4));
@@ -150,9 +164,11 @@ void MyScene::draw(double currentTime)
 	glEnable(GL_CULL_FACE);
 	glDepthMask(GL_TRUE);
 
-	multi.useShader();
-	multi.draw();
-	multi.stopShader();
+	for (int i = 0; i < multiInstanceList.size(); i++) {
+		multiInstanceList[i].useShader();
+		multiInstanceList[i].draw();
+		multiInstanceList[i].stopShader();
+	}
 
 	Shader current_shader = instanceList[0].shader;
 	current_shader.useShader();

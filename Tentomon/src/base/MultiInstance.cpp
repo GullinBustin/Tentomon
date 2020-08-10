@@ -124,7 +124,7 @@ void MultiInstance::draw()
 		texture->useTexture();
 	}
 	mesh->drawInstances(model.size());
-	//mesh->draw();
+
 	if (texture != NULL) texture->stopTexture();
 }
 

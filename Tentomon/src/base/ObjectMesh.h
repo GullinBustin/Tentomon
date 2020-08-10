@@ -11,6 +11,8 @@ public:
 
     void draw();
 
+    void drawInstances(int n);
+
     const aiScene* my_scene;
 
 private:

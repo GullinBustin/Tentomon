@@ -139,6 +139,7 @@
     <None Include="data\models\Tentomon.mtl" />
     <None Include="data\shaders\instanceShader.frag" />
     <None Include="data\shaders\instanceShader.vert" />
+    <None Include="data\shaders\objInstanceShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\images\tochos.jpg">

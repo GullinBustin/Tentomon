@@ -198,3 +198,10 @@ void ObjectMesh::draw() {
 
 	glDisableVertexAttribArray(0);
 }
+
+void ObjectMesh::drawInstances(int n) {
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0, n);
+}
